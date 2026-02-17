@@ -2,8 +2,8 @@ services:
   frontend:
     build: ./frontend/vayk_frontend
     ports:
-      - "8080:8080"
+      - "8000:8000"
   backend:
     build: ./backend
     ports:
-      - "8000:8000"
+      - "8080:8080"
