@@ -24,6 +24,10 @@ import EndDateInput from './components/form/EndDateInput.vue'
         </div>
       </div>
 
+      <div class="line"></div>
+
+      <hr>
+
     </div>
   </container>
 </template>
@@ -58,6 +62,12 @@ import EndDateInput from './components/form/EndDateInput.vue'
   font-size: 16px;
   margin-top: 30px;
   margin-bottom: 10px;
+}
 
+.line {
+  border-bottom: 1px solid #939393;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: 104%;
 }
 </style>
