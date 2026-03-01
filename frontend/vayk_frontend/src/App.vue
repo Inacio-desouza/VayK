@@ -60,7 +60,7 @@ import GenerateItinerary from './components/form/GenerateItinerary.vue'
   display: flex;
   flex-direction: column;
   width: 55%;
-  margin-bottom: 5%;
+  margin-bottom: 8%;
 }
 
 .logo {

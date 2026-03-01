@@ -15,8 +15,8 @@
     padding: 18px 30px;
     border: none;
     cursor: pointer;
-    width: 100%;
-    margin-top: 30px;
+    width: 104%;
+    margin-top: 8%;
     transition: background-color 0.15s;
 }
 .generate-button:hover {
