@@ -8,7 +8,7 @@ import GenerateItinerary from './components/form/GenerateItinerary.vue'
 </script>
 
 <template>
-  <container style="display: flex; justify-content: center;">
+  <div class="page">
     <div class="form-container">
       <h1 class="logo">VayK</h1>
       <h2 class="subheader">Build your trip around experiences, not logistics</h2>
@@ -52,10 +52,22 @@ import GenerateItinerary from './components/form/GenerateItinerary.vue'
       <GenerateItinerary />
 
     </div>
-  </container>
+  </div>
 </template>
 
 <style scoped>
+.page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 48px 16px;
+
+  /* gradient */
+  background: linear-gradient(180deg, #0b2fbf 0%, #1c62ff 45%, #2aa6ff 100%);
+}
+
+
 .form-container {
   display: flex;
   flex-direction: column;
