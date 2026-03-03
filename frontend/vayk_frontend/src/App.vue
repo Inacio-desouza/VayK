@@ -110,3 +110,9 @@ import logoUrl from './assets/transparent_logo.png'
   width: 104%;
 }
 </style>
+
+<style>
+body {
+  margin: 0;
+}
+</style>
