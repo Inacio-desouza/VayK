@@ -5,12 +5,15 @@ import EndDateInput from './components/form/EndDateInput.vue'
 import ExperienceSelector from './components/form/ExperienceSelector.vue'
 import PreferenceInput from './components/form/PreferenceInput.vue'
 import GenerateItinerary from './components/form/GenerateItinerary.vue'
+
+import logoUrl from './assets/transparent_logo.png'
 </script>
 
 <template>
   <div class="page">
     <div class="form-container">
-      <h1 class="logo">VayK</h1>
+      <!-- Replace text logo with image -->
+      <img class="logo-img" :src="logoUrl" alt="VayK logo" />
       <h2 class="subheader">Build your trip around experiences, not logistics</h2>
       <div style="width: 100%">
         <h3 class="form-question">Where do you want to go?</h3>
@@ -75,12 +78,12 @@ import GenerateItinerary from './components/form/GenerateItinerary.vue'
   margin-bottom: 8%;
 }
 
-.logo {
-  font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  font-size: 67px;
-  margin-bottom: 0%;
+.logo-img {
+  height: 200px;
+  width: auto;
   align-self: center;
+  margin-bottom: 8px;
+  display: block;
 }
 
 .subheader {
