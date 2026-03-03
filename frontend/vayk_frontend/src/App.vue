@@ -59,7 +59,7 @@ import GenerateItinerary from './components/form/GenerateItinerary.vue'
 .form-container {
   display: flex;
   flex-direction: column;
-  width: 55%;
+  width: 60%;
   margin-bottom: 8%;
 }
 
