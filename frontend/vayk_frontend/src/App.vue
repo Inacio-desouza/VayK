@@ -65,6 +65,7 @@ import logoUrl from './assets/transparent_logo.png'
   display: flex;
   justify-content: center;
   padding: 48px 16px;
+  color: white;
 
   /* gradient */
   background: linear-gradient(180deg, #0828a8 0%, #1c62ff 45%, #2aa6ff 100%);
