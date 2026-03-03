@@ -67,7 +67,7 @@ import logoUrl from './assets/transparent_logo.png'
   padding: 48px 16px;
 
   /* gradient */
-  background: linear-gradient(180deg, #0b2fbf 0%, #1c62ff 45%, #2aa6ff 100%);
+  background: linear-gradient(180deg, #0828a8 0%, #1c62ff 45%, #2aa6ff 100%);
 }
 
 
