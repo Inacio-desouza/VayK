@@ -5,12 +5,15 @@ import EndDateInput from './components/form/EndDateInput.vue'
 import ExperienceSelector from './components/form/ExperienceSelector.vue'
 import PreferenceInput from './components/form/PreferenceInput.vue'
 import GenerateItinerary from './components/form/GenerateItinerary.vue'
+
+import logoUrl from './assets/transparent_logo.png'
 </script>
 
 <template>
-  <container style="display: flex; justify-content: center;">
+  <div class="page">
     <div class="form-container">
-      <h1 class="logo">VayK</h1>
+      <!-- Replace text logo with image -->
+      <img class="logo-img" :src="logoUrl" alt="VayK logo" />
       <h2 class="subheader">Build your trip around experiences, not logistics</h2>
       <div style="width: 100%">
         <h3 class="form-question">Where do you want to go?</h3>
@@ -52,10 +55,23 @@ import GenerateItinerary from './components/form/GenerateItinerary.vue'
       <GenerateItinerary />
 
     </div>
-  </container>
+  </div>
 </template>
 
 <style scoped>
+.page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 48px 16px;
+  color: white;
+
+  /* gradient */
+  background: linear-gradient(180deg, #0828a8 0%, #1c62ff 45%, #2aa6ff 100%);
+}
+
+
 .form-container {
   display: flex;
   flex-direction: column;
@@ -63,12 +79,12 @@ import GenerateItinerary from './components/form/GenerateItinerary.vue'
   margin-bottom: 8%;
 }
 
-.logo {
-  font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  font-size: 67px;
-  margin-bottom: 0%;
+.logo-img {
+  height: 200px;
+  width: auto;
   align-self: center;
+  margin-bottom: 8px;
+  display: block;
 }
 
 .subheader {
@@ -92,5 +108,11 @@ import GenerateItinerary from './components/form/GenerateItinerary.vue'
   margin-top: 30px;
   margin-bottom: 30px;
   width: 104%;
+}
+</style>
+
+<style>
+body {
+  margin: 0;
 }
 </style>
