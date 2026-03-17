@@ -1,4 +1,6 @@
 <script setup>
+import { reactive } from 'vue'
+
 import DestinationInput from './components/form/DestinationInput.vue'
 import StartDateInput from './components/form/StartDateInput.vue'
 import EndDateInput from './components/form/EndDateInput.vue'
@@ -7,6 +9,19 @@ import PreferenceInput from './components/form/PreferenceInput.vue'
 import GenerateItinerary from './components/form/GenerateItinerary.vue'
 
 import logoUrl from './assets/transparent_logo.png'
+
+const tripForm = reactive({
+  destination: '',
+  arrivalDate: '',
+  departureDate: '',
+  interests: [],
+  preferences: '',
+})
+
+function handleSubmit() {
+  console.log('Submitting trip form:', { ...tripForm })
+}
+
 </script>
 
 <template>
