@@ -1,24 +1,29 @@
 <template>
   <div class="preference-input-wrapper" style="width: 100%;">
-    <!-- Main text input field for user to type destination -->
     <textarea
-      v-model="preferences"
+      :value="modelValue"
+      @input="emit('update:modelValue', $event.target.value)"
       placeholder="e.g., I prefer local experiences over tourist spots, I'm vegetarian, I want to avoid crowds..."
       class="preference-input"
       rows="6"
       maxlength="500"
-      ></textarea>
-      <!-- Character counter -->
+    ></textarea>
+
     <div class="character-counter">
-      {{ preferences.length }}/500
+      {{ modelValue.length }}/500
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
+})
 
-const preferences = ref('')
+const emit = defineEmits(['update:modelValue'])
 </script>
 
 <style scoped>

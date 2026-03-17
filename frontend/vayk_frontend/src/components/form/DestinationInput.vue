@@ -1,7 +1,8 @@
 <template>
   <div class="destination-input-wrapper">
-    <!-- Main text input field for user to type destination -->
     <input
+      :value="modelValue"
+      @input="emit('update:modelValue', $event.target.value)"
       type="text"
       placeholder="Enter destination"
       class="destination-input"
@@ -10,7 +11,14 @@
 </template>
 
 <script setup>
+defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
+})
 
+const emit = defineEmits(['update:modelValue'])
 </script>
 
 <style scoped>

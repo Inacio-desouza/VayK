@@ -1,9 +1,11 @@
 <template>
-    <button class="generate-button">Generate My Itinerary</button>
+  <button class="generate-button" type="button" @click="emit('submit')">
+    Generate My Itinerary
+  </button>
 </template>
 
 <script setup>
-
+const emit = defineEmits(['submit'])
 </script>
 
 <style scoped>

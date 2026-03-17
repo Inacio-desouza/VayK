@@ -27,26 +27,29 @@ function handleSubmit() {
 <template>
   <div class="page">
     <div class="form-container">
-      <!-- Replace text logo with image -->
       <img class="logo-img" :src="logoUrl" alt="VayK logo" />
       <h2 class="subheader">Build your trip around experiences, not logistics</h2>
+
       <div style="width: 100%">
         <h3 class="form-question">Where do you want to go?</h3>
-        <DestinationInput />
+        <DestinationInput v-model="tripForm.destination" />
+
         <h3 class="form-question">When are you traveling?</h3>
 
         <div class="date-row">
           <div>
-            <StartDateInput />
+            <StartDateInput v-model="tripForm.arrivalDate" />
             <h4 class="form-question small-label">Arrival Date</h4>
           </div>
           <div>
-            <EndDateInput />
+            <EndDateInput v-model="tripForm.departureDate" />
             <h4 class="form-question small-label">Departure Date</h4>
           </div>
         </div>
       </div>
+
       <div class="line"></div>
+
       <div style="width: 100%">
         <h3 class="form-question" style="font-size: 18px; margin-top: 1%">
           What are your interests?
@@ -54,8 +57,9 @@ function handleSubmit() {
         <h4 class="form-question" style="font-size: 12px; margin-top: 0px">
           Select all that interest you
         </h4>
-        <ExperienceSelector />
+        <ExperienceSelector v-model="tripForm.interests" />
       </div>
+
       <div class="line"></div>
 
       <div style="width: 100%">
@@ -65,10 +69,10 @@ function handleSubmit() {
         <h4 class="form-question" style="font-size: 12px; margin-top: 0px">
           Tell us more about yourself and your interests
         </h4>
-        <PreferenceInput />
+        <PreferenceInput v-model="tripForm.preferences" />
       </div>
-      <GenerateItinerary />
 
+      <GenerateItinerary @submit="handleSubmit" />
     </div>
   </div>
 </template>

@@ -1,21 +1,30 @@
 <template>
   <div class="grid">
-      <button
-        v-for="option in options"
-        :key="option.id"
-        class="card"
-        :class="{ selected: selected.includes(option.id) }"
-        @click="toggle(option.id)"
-      >
-        <component :is="option.icon" :size="20" :stroke-width="1.5" class="icon" />
-        <span class="label">{{ option.label }}</span>
-      </button>
-</div>
+    <button
+      v-for="option in options"
+      :key="option.id"
+      type="button"
+      class="card"
+      :class="{ selected: modelValue.includes(option.id) }"
+      @click="toggle(option.id)"
+    >
+      <component :is="option.icon" :size="20" :stroke-width="1.5" class="icon" />
+      <span class="label">{{ option.label }}</span>
+    </button>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { GlassWater, Landmark, UtensilsCrossed, Mountain, Users, DollarSign } from 'lucide-vue-next'
+
+const props = defineProps({
+  modelValue: {
+    type: Array,
+    default: () => [],
+  },
+})
+
+const emit = defineEmits(['update:modelValue'])
 
 const options = [
   { id: 'nightlife', icon: GlassWater,     label: 'Nightlife' },
@@ -26,15 +35,17 @@ const options = [
   { id: 'budget',   icon: DollarSign,      label: 'Budget-Focused' },
 ]
 
-const selected = ref([])
-
 function toggle(id) {
-  const idx = selected.value.indexOf(id)
+  const updated = [...props.modelValue]
+  const idx = updated.indexOf(id)
+
   if (idx === -1) {
-    selected.value.push(id)
+    updated.push(id)
   } else {
-    selected.value.splice(idx, 1)
+    updated.splice(idx, 1)
   }
+
+  emit('update:modelValue', updated)
 }
 </script>
 
