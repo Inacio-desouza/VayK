@@ -12,14 +12,14 @@
     <div v-if="showDropdown && suggestions.length" class="dropdown">
       <button
         v-for="place in suggestions"
-        :key="place.xid || `${place.name}-${place.country}-${place.lat}-${place.lon}`"
+        :key="place.id || `${place.name}-${place.country}-${place.lat}-${place.lon}`"
         type="button"
         class="dropdown-item"
         @mousedown.prevent="selectDestination(place)"
       >
         <div class="place-name">{{ place.name }}</div>
         <div class="place-meta">
-          {{ place.country || 'Unknown country' }}
+          {{ [place.admin1, place.country].filter(Boolean).join(', ') }}
         </div>
       </button>
     </div>
@@ -42,54 +42,12 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const API_KEY = '5ae2e3f221c38a28845f05b606078b51fd1f6bb18e7bc9e7685b8007'
 
 const searchText = ref('')
 const suggestions = ref([])
 const loading = ref(false)
 const showDropdown = ref(false)
 
-// Reduce random results
-const blockedKinds = [
-  'street',
-  'building',
-  'cafe',
-  'restaurant',
-  'shop',
-  'supermarket',
-  'accomodations',
-  'hotel',
-  'hostels',
-  'apartments',
-  'banks',
-  'atm',
-  'fuel',
-  'car_rental',
-  'car_wash',
-  'airport',
-  'railway',
-  'bus_station',
-]
-const blockedNamePatterns = [
-  /\bstreet\b/i,
-  /\broad\b/i,
-  /\bavenue\b/i,
-  /\bave\b/i,
-  /\bblvd\b/i,
-  /\bboulevard\b/i,
-  /\bdrive\b/i,
-  /\bdr\b/i,
-  /\blane\b/i,
-  /\bln\b/i,
-  /\bcafe\b/i,
-  /\brestaurant\b/i,
-  /\bhotel\b/i,
-  /\bapartment\b/i,
-  /\bmuseum\b/i,
-  /\bmall\b/i,
-  /\bplaza\b/i,
-  /\bbuilding\b/i,
-]
 
 let debounceTimeout = null
 
@@ -125,64 +83,32 @@ watch(searchText, (newValue) => {
   }, 300)
 })
 
-function scoreFeature(feature, query) {
-  const name = feature.properties?.name || ''
-  const lowerName = name.toLowerCase()
-  const lowerQuery = query.toLowerCase()
-  const kinds = (feature.properties?.kinds || '').toLowerCase()
-
-  let score = 0
-
-  // Strong preference for close text matches
-  if (lowerName === lowerQuery) score += 100
-  else if (lowerName.startsWith(lowerQuery)) score += 60
-  else if (lowerName.includes(lowerQuery)) score += 30
-
-  // Prefer cleaner, simpler names
-  if (!/\d/.test(name)) score += 10
-  if (name.length <= 30) score += 8
-  if ((name.match(/,/g) || []).length <= 1) score += 6
-
-  // Penalize obvious non-destination types
-  if (blockedKinds.some(kind => kinds.includes(kind))) score -= 100
-  if (blockedNamePatterns.some(pattern => pattern.test(name))) score -= 100
-
-  return score
-}
 
 async function fetchSuggestions(query) {
   loading.value = true
 
   try {
-    const url = `https://api.opentripmap.com/0.1/en/places/autosuggest?name=${encodeURIComponent(query)}&radius=5000000&lon=0&lat=20&limit=25&apikey=${API_KEY}`
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=7&language=en&format=json`
 
     const response = await fetch(url)
     const data = await response.json()
 
-    if (data && data.features) {
-      suggestions.value = data.features
-        .filter((feature) => {
-          const name = feature.properties?.name || ''
-          return !!name
-        })
-        .map((feature) => {
-          const score = scoreFeature(feature, query)
-
-          return {
-            xid: feature.properties?.xid || '',
-            name: feature.properties?.name || '',
-            highlightedName: feature.properties?.highlighted_name || '',
-            kinds: feature.properties?.kinds || '',
-            country: '',
-            lon: feature.geometry?.coordinates?.[0] ?? null,
-            lat: feature.geometry?.coordinates?.[1] ?? null,
-            displayName: feature.properties?.name || '',
-            score,
-          }
-        })
-        .filter((place) => place.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 7)
+    if (data && data.results) {
+      suggestions.value = data.results.map((place) => ({
+        id: `${place.id ?? place.latitude}-${place.longitude}`,
+        name: place.name || '',
+        country: place.country || '',
+        admin1: place.admin1 || '',
+        lat: place.latitude ?? null,
+        lon: place.longitude ?? null,
+        countryCode: place.country_code || '',
+        timezone: place.timezone || '',
+        displayName: [
+          place.name,
+          place.admin1,
+          place.country
+        ].filter(Boolean).join(', ')
+      }))
     } else {
       suggestions.value = []
     }

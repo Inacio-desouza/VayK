@@ -18,6 +18,12 @@ const tripForm = reactive({
   preferences: '',
 })
 
+const errors = reactive({
+  destination: '',
+  arrivalDate: '',
+  departureDate: '',
+})
+
 function handleSubmit() {
   console.log('Submitting trip form:', JSON.parse(JSON.stringify(tripForm)))
 }
