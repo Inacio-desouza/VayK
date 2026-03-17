@@ -8,19 +8,25 @@
 
 <style scoped>
 .generate-button {
-    background-color: #000000;
-    color: #FFFFFF;
-    font-family: "Inter";
-    font-size: 20px;
-    padding: 18px 30px;
-    border: none;
-    cursor: pointer;
-    width: 104%;
-    margin-top: 8%;
-    transition: background-color 0.15s;
+  background-color: #1e3a8a;
+  color: #FFFFFF;
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+
+  padding: 18px 30px;
+  border: none;
+  cursor: pointer;
+
+  width: 100%;
+  margin-top: 32px;
+
+  transition: all 0.2s ease;
 }
 .generate-button:hover {
-    background-color: #222222;
-    transition: background-color 0.15s;
+  background-color: #172554;
+}
+
+.generate-button:active {
+  transform: scale(0.98);
 }
 </style>

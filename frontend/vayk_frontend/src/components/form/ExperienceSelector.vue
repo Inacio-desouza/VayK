@@ -54,26 +54,36 @@ function toggle(id) {
   margin-bottom: 10px;
 }
 
+/* Base card */
 .card {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 18px 20px;
+
+  background: #fff;
   border: 1.5px solid #dcdcdc;
   border-radius: 0px;
-  background: #fff;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+
   text-align: left;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
 }
 
-.card:hover {
-  border-color: #b3b3b3;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+/* Hover (only when NOT selected) */
+.card:hover:not(.selected) {
+  border-color: #9ca3af;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.card:active {
+  transform: scale(0.98);
 }
 
 .card.selected {
-  background: #1e3a8a;  /* deep blue */
+  background: #1e3a8a;
   border-color: #1e3a8a;
 }
 
