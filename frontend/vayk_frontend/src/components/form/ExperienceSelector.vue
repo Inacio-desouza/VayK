@@ -17,13 +17,12 @@
 <script setup>
 import { GlassWater, Landmark, UtensilsCrossed, Mountain, Users, DollarSign } from 'lucide-vue-next'
 
-const props = defineProps({
+const { modelValue } = defineProps({
   modelValue: {
     type: Array,
     default: () => [],
   },
 })
-
 const emit = defineEmits(['update:modelValue'])
 
 const options = [
