@@ -21,13 +21,11 @@ const emit = defineEmits(['update:modelValue'])
 </script>
 
 <style scoped>
-/* Wrapper container - positioned relative so dropdown can be positioned absolute */
 .date-input-wrapper {
   position: relative;
   width: 100%;
 }
 
-/* Main input field styling */
 .date-input {
   width: 100%;
   padding: 12px;
@@ -36,7 +34,6 @@ const emit = defineEmits(['update:modelValue'])
   font-family: "Inter";
 }
 
-/* Styling when input field is focused (active) */
 .date-input:focus {
   outline: none;
   border-color: #000000;

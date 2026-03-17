@@ -23,19 +23,20 @@ const { modelValue } = defineProps({
     default: () => [],
   },
 })
+
 const emit = defineEmits(['update:modelValue'])
 
 const options = [
-  { id: 'nightlife', icon: GlassWater,     label: 'Nightlife' },
-  { id: 'museums',  icon: Landmark,        label: 'Museums' },
-  { id: 'food',     icon: UtensilsCrossed, label: 'Food & Dining' },
-  { id: 'outdoor',  icon: Mountain,        label: 'Outdoor Adventures' },
-  { id: 'family',   icon: Users,           label: 'Family-Friendly' },
-  { id: 'budget',   icon: DollarSign,      label: 'Budget-Focused' },
+  { id: 'nightlife', icon: GlassWater, label: 'Nightlife' },
+  { id: 'museums', icon: Landmark, label: 'Museums' },
+  { id: 'food', icon: UtensilsCrossed, label: 'Food & Dining' },
+  { id: 'outdoor', icon: Mountain, label: 'Outdoor Adventures' },
+  { id: 'family', icon: Users, label: 'Family-Friendly' },
+  { id: 'budget', icon: DollarSign, label: 'Budget-Focused' },
 ]
 
 function toggle(id) {
-  const updated = [...props.modelValue]
+  const updated = [...modelValue]
   const idx = updated.indexOf(id)
 
   if (idx === -1) {
@@ -64,24 +65,19 @@ function toggle(id) {
   margin-bottom: 10px;
 }
 
-/* Base card */
 .card {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 18px 20px;
-
   background: #fff;
   border: 1.5px solid #dcdcdc;
   border-radius: 0px;
-
   text-align: left;
   cursor: pointer;
-
   transition: all 0.2s ease;
 }
 
-/* Hover (only when NOT selected) */
 .card:hover:not(.selected) {
   border-color: #9ca3af;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);

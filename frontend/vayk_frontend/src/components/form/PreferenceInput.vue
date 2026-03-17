@@ -27,13 +27,11 @@ const emit = defineEmits(['update:modelValue'])
 </script>
 
 <style scoped>
-/* Wrapper container - positioned relative so dropdown can be positioned absolute */
 .preference-input-wrapper {
   position: relative;
   width: 100%;
 }
 
-/* Main input field styling */
 .preference-input {
   width: 100%;
   padding: 12px;
@@ -42,7 +40,6 @@ const emit = defineEmits(['update:modelValue'])
   font-family: "Inter";
 }
 
-/* Styling when input field is focused (active) */
 .preference-input:focus {
   outline: none;
   border-color: #000000;

@@ -24,16 +24,14 @@ const props = defineProps({ disabled: Boolean })
   color: #FFFFFF;
   font-family: "Inter", sans-serif;
   font-size: 20px;
-
   padding: 18px 30px;
   border: none;
   cursor: pointer;
-
   width: 100%;
   margin-top: 32px;
-
   transition: all 0.2s ease;
 }
+
 .generate-button:hover {
   background-color: #172554;
 }
