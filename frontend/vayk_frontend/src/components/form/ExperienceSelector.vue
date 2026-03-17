@@ -73,8 +73,13 @@ function toggle(id) {
 }
 
 .card.selected {
-  border-color: #3b82f6;
-  background: #eff6ff;
+  background: #1e3a8a;  /* deep blue */
+  border-color: #1e3a8a;
+}
+
+.card.selected .label,
+.card.selected .icon {
+  color: white;
 }
 
 .icon {

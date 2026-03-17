@@ -20,14 +20,14 @@ import logoUrl from './assets/transparent_logo.png'
         <DestinationInput />
         <h3 class="form-question">When are you traveling?</h3>
 
-        <div style="display: flex; gap: 40px">
-          <div style="display: flex; flex-direction: column; width: 50%">
+        <div class="date-row">
+          <div>
             <StartDateInput />
-            <h4 class="form-question" style="font-size: 12px; margin-top: 6px">Arrival Date</h4>
+            <h4 class="form-question small-label">Arrival Date</h4>
           </div>
-          <div style="display: flex; flex-direction: column; width: 50%">
+          <div>
             <EndDateInput />
-            <h4 class="form-question" style="font-size: 12px; margin-top: 6px">Departure Date</h4>
+            <h4 class="form-question small-label">Departure Date</h4>
           </div>
         </div>
       </div>
@@ -59,29 +59,31 @@ import logoUrl from './assets/transparent_logo.png'
 </template>
 
 <style scoped>
+
 .page {
   min-height: 100vh;
   width: 100%;
   display: flex;
   justify-content: center;
   padding: 48px 16px;
+  box-sizing: border-box;
   color: white;
-
-  /* gradient */
   background: linear-gradient(180deg, #0828a8 0%, #1c62ff 45%, #2aa6ff 100%);
 }
-
 
 .form-container {
   display: flex;
   flex-direction: column;
-  width: 60%;
-  margin-bottom: 8%;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 8%;
+  box-sizing: border-box;
 }
 
 .logo-img {
-  height: 200px;
-  width: auto;
+  width: 100%;
+  max-width: 650px;
+  height: auto;
   align-self: center;
   margin-bottom: 8px;
   display: block;
@@ -93,6 +95,7 @@ import logoUrl from './assets/transparent_logo.png'
   font-size: 22px;
   margin-top: 1%;
   align-self: center;
+  text-align: center;
 }
 
 .form-question {
@@ -105,14 +108,72 @@ import logoUrl from './assets/transparent_logo.png'
 
 .line {
   border-bottom: 1px solid #939393;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  width: 104%;
+  margin: 30px 0;
+  width: 100%;
+}
+
+.date-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.date-row > div {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  min-width: 0;
+}
+
+.small-label {
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 24px 12px;
+  }
+
+  .date-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .date-row > div {
+    width: 100%;
+  }
 }
 </style>
 
 <style>
-body {
+html,
+body,
+#app {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(180deg, #0828a8 0%, #1c62ff 45%, #2aa6ff 100%);
+}
+
+input,
+textarea,
+button {
+  font-family: 'Inter', sans-serif;
+}
+
+::placeholder {
+  font-family: 'Inter', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 </style>
