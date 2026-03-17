@@ -29,6 +29,7 @@ const submitPopup = reactive({
   messages: [],
 })
 
+// --- Clear errors on input ---
 watch(() => tripForm.destination, (newValue) => {
   if (newValue) {
     errors.destination = ''
@@ -41,6 +42,7 @@ watch(() => tripForm.arrivalDate, (newValue) => {
   }
 })
 
+// --- Real-time date validation ---
 watch(() => tripForm.departureDate, (newValue) => {
   if (newValue && errors.departureDate === 'Please select a departure date.') {
     errors.departureDate = ''
@@ -65,6 +67,7 @@ watch(
   }
 )
 
+// --- Validate form inputs ---
 function validateForm() {
   errors.destination = ''
   errors.arrivalDate = ''
@@ -258,25 +261,6 @@ function handleSubmit() {
   border: 2px solid #ef4444;
   background: #fff7f7;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
-}
-
-.destination-error-icon {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  background: #ef4444;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  pointer-events: none;
-  z-index: 2;
 }
 
 .field-error-box {

@@ -51,6 +51,7 @@ const showDropdown = ref(false)
 
 let debounceTimeout = null
 
+// --- Sync input with selected destination ---
 watch(
   () => props.modelValue,
   (newValue) => {
@@ -64,6 +65,7 @@ watch(
   { immediate: true }
 )
 
+// --- Handle typing + trigger search ---
 watch(searchText, (newValue) => {
   showDropdown.value = true
 
@@ -83,7 +85,7 @@ watch(searchText, (newValue) => {
   }, 300)
 })
 
-
+// --- Fetch destination suggestions (API) ---
 async function fetchSuggestions(query) {
   loading.value = true
 
@@ -120,6 +122,7 @@ async function fetchSuggestions(query) {
   }
 }
 
+// --- Select a destination from dropdown ---
 function selectDestination(place) {
   emit('update:modelValue', place)
   searchText.value = place.displayName || place.name
@@ -127,6 +130,7 @@ function selectDestination(place) {
   showDropdown.value = false
 }
 
+// --- Show dropdown on focus ---
 function handleFocus() {
   if (suggestions.value.length) {
     showDropdown.value = true
