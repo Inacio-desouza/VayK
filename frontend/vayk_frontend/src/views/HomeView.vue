@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import DestinationInput from '../components/form/DestinationInput.vue'
@@ -21,10 +21,20 @@ const tripForm = reactive({
   preferences: '',
 })
 
+const isFormValid = computed(() => {
+  const destinationOk = tripForm.destination.trim().length > 0
+  const arrival = new Date(tripForm.arrivalDate)
+  const depart = new Date(tripForm.departureDate)
+  const arrivalOk = tripForm.arrivalDate && !Number.isNaN(arrival.valueOf())
+  const departOk = tripForm.departureDate && !Number.isNaN(depart.valueOf())
+  const dateOrderOk = arrivalOk && departOk && depart > arrival
+  return destinationOk && arrivalOk && departOk && dateOrderOk
+})
+
 function handleSubmit() {
+  if (!isFormValid.value) return
   router.push('/activities')
 }
-
 </script>
 
 <template>
@@ -75,13 +85,16 @@ function handleSubmit() {
         <PreferenceInput v-model="tripForm.preferences" />
       </div>
 
-      <GenerateItinerary @submit="handleSubmit" />
+      <GenerateItinerary :disabled="!isFormValid" @submit="handleSubmit" />
+      <p v-if="!isFormValid" class="warning">
+        Please complete destination and choose valid arrival/departure dates (departure after
+        arrival).
+      </p>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 .page {
   min-height: 100vh;
   width: 100%;
@@ -103,7 +116,7 @@ function handleSubmit() {
 }
 
 .logo-img {
-  width: 100%;
+  width: 70%;
   max-width: 650px;
   height: auto;
   align-self: center;
@@ -165,5 +178,13 @@ function handleSubmit() {
   .date-row > div {
     width: 100%;
   }
+}
+
+.warning {
+  color: #ffb5b5;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  margin-top: 16px;
+  text-align: center;
 }
 </style>
