@@ -20,6 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 PLACES_KEY = os.getenv("PLACES_KEY")
+GEMINI_KEY = os.getenv("GEMINI_KEY")
 
 
 # Quick-start development settings - unsuitable for production
@@ -83,10 +84,10 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "postgres",
-        "USER": "postgres",
+        "USER": "postgres.nxnrpeyoporpclqihjel",
         "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": "db.nxnrpeyoporpclqihjel.supabase.co",
-        "PORT": "5432",
+        "HOST": "aws-1-us-east-1.pooler.supabase.com",
+        "PORT": "6543",
     }
 }
 
