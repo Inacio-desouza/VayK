@@ -89,7 +89,7 @@ function toggle(id) {
 }
 
 .card.selected {
-  background: #0c1630;
+  background: #172554;
   border-color: #0c1630;
 }
 

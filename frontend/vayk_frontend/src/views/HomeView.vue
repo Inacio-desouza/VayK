@@ -8,7 +8,7 @@ import ExperienceSelector from '../components/form/ExperienceSelector.vue'
 import PreferenceInput from '../components/form/PreferenceInput.vue'
 import GenerateItinerary from '../components/form/GenerateItinerary.vue'
 
-import logoUrl from '../assets/transparent_logo.png'
+import logoUrl from '../assets/navy_logo.png'
 
 const tripForm = reactive({
   destination: null,
@@ -130,8 +130,13 @@ function handleSubmit() {
   <div class="page">
     <div class="form-container">
       <!-- <img class="logo-img" :src="logoUrl" alt="VayK logo" /> -->
-      <h1 class="logo-text" style="margin-top: 35px;">VayK</h1>
-      <h2 class="subheader">Build your trip around experiences, not logistics</h2>
+      <img
+        class="logo-img"
+        :src="logoUrl"
+        alt="VayK logo"
+        style="margin-top: 35px;"
+      />
+      <h2 class="subheader">Build your trip around experiences, not logistics.</h2>
 
       <div style="width: 100%">
         <h3 class="form-question">Where do you want to go?</h3>
@@ -203,7 +208,7 @@ function handleSubmit() {
 
 .logo-img {
   width: 100%;
-  max-width: 650px;
+  max-width: 400px;
   height: auto;
   align-self: center;
   margin-bottom: 8px;
