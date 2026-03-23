@@ -22,7 +22,7 @@ const tripForm = reactive({
 })
 
 const isFormValid = computed(() => {
-  const destinationOk = tripForm.destination.trim().length > 0
+  const destinationOk = !!tripForm.destination
   const arrival = new Date(tripForm.arrivalDate)
   const depart = new Date(tripForm.departureDate)
   const arrivalOk = tripForm.arrivalDate && !Number.isNaN(arrival.valueOf())
