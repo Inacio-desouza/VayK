@@ -151,7 +151,7 @@ function handleBlur() {
 }
 
 .destination-input {
-  width: 100%;
+  width: 97%;
   padding: 12px;
   font-size: 14px;
   border: 1px solid #ccc;

@@ -20,7 +20,7 @@ const props = defineProps({ disabled: Boolean })
   opacity: 0.55;
 }
 .generate-button {
-  background-color: #1e3a8a;
+  background-color: #172554;
   color: #FFFFFF;
   font-family: "Inter", sans-serif;
   font-size: 20px;
@@ -33,7 +33,7 @@ const props = defineProps({ disabled: Boolean })
 }
 
 .generate-button:hover {
-  background-color: #172554;
+  background-color: #1e3a8a;
 }
 
 .generate-button:active {

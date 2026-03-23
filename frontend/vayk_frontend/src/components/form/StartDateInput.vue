@@ -27,7 +27,7 @@ const emit = defineEmits(['update:modelValue'])
 }
 
 .date-input {
-  width: 100%;
+  width: 94%;
   padding: 12px;
   font-size: 14px;
   border: 1px solid #ccc;

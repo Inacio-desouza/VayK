@@ -89,13 +89,13 @@ function toggle(id) {
 }
 
 .card.selected {
-  background: #1e3a8a;
-  border-color: #1e3a8a;
+  background: #0c1630;
+  border-color: #0c1630;
 }
 
 .card.selected .label,
 .card.selected .icon {
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 .icon {
