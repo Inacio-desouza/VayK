@@ -30,24 +30,33 @@ const submitPopup = reactive({
 })
 
 // --- Clear errors on input ---
-watch(() => tripForm.destination, (newValue) => {
-  if (newValue) {
-    errors.destination = ''
-  }
-})
+watch(
+  () => tripForm.destination,
+  (newValue) => {
+    if (newValue) {
+      errors.destination = ''
+    }
+  },
+)
 
-watch(() => tripForm.arrivalDate, (newValue) => {
-  if (newValue) {
-    errors.arrivalDate = ''
-  }
-})
+watch(
+  () => tripForm.arrivalDate,
+  (newValue) => {
+    if (newValue) {
+      errors.arrivalDate = ''
+    }
+  },
+)
 
 // --- Real-time date validation ---
-watch(() => tripForm.departureDate, (newValue) => {
-  if (newValue && errors.departureDate === 'Please select a departure date.') {
-    errors.departureDate = ''
-  }
-})
+watch(
+  () => tripForm.departureDate,
+  (newValue) => {
+    if (newValue && errors.departureDate === 'Please select a departure date.') {
+      errors.departureDate = ''
+    }
+  },
+)
 
 watch(
   () => [tripForm.arrivalDate, tripForm.departureDate],
@@ -64,7 +73,7 @@ watch(
     } else {
       errors.departureDate = ''
     }
-  }
+  },
 )
 
 // --- Validate form inputs ---
@@ -94,7 +103,11 @@ function validateForm() {
     isValid = false
   }
 
-  if (tripForm.arrivalDate && tripForm.departureDate && tripForm.departureDate <= tripForm.arrivalDate) {
+  if (
+    tripForm.arrivalDate &&
+    tripForm.departureDate &&
+    tripForm.departureDate <= tripForm.arrivalDate
+  ) {
     errors.departureDate = 'Departure date must be after arrival date.'
 
     if (!popupMessages.includes('Departure date must be after arrival date.')) {
@@ -130,12 +143,7 @@ function handleSubmit() {
   <div class="page">
     <div class="form-container">
       <!-- <img class="logo-img" :src="logoUrl" alt="VayK logo" /> -->
-      <img
-        class="logo-img"
-        :src="logoUrl"
-        alt="VayK logo"
-        style="margin-top: 35px;"
-      />
+      <img class="logo-img" :src="logoUrl" alt="VayK logo" style="margin-top: 35px" />
       <h2 class="subheader">Build your trip around experiences, not logistics.</h2>
 
       <div style="width: 100%">
@@ -159,10 +167,11 @@ function handleSubmit() {
       <div class="line"></div>
 
       <div style="width: 100%">
-        <h3 class="form-question" style="margin-bottom: 0px">
-          What are your interests?
-        </h3>
-        <h4 class="form-question" style="font-size: 14px; margin-top: 10px; margin-left: 1px; margin-bottom: 12px;">
+        <h3 class="form-question" style="margin-bottom: 0px">What are your interests?</h3>
+        <h4
+          class="form-question"
+          style="font-size: 14px; margin-top: 10px; margin-left: 1px; margin-bottom: 12px"
+        >
           Select all that interest you
         </h4>
         <ExperienceSelector v-model="tripForm.interests" />
@@ -171,15 +180,23 @@ function handleSubmit() {
       <div class="line"></div>
 
       <div style="width: 100%">
-        <h3 class="form-question">
-          Add additional preferences below
-        </h3>
-        <h4 class="form-question" style="font-size: 14px;  margin-bottom: 10px;">
+        <h3 class="form-question">Add additional preferences below</h3>
+        <h4 class="form-question" style="font-size: 14px; margin-bottom: 10px">
           Tell us more about yourself and your interests
         </h4>
         <PreferenceInput v-model="tripForm.preferences" />
       </div>
-
+      <div v-if="submitPopup.show" class="error-popup">
+        <div class="error-popup-text">
+          <strong>Please fix the following errors:</strong>
+          <ol>
+            <li v-for="(message, index) in submitPopup.messages" :key="index">
+              {{ message }}
+            </li>
+          </ol>
+        </div>
+        <button class="error-popup-close" @click="closePopup">×</button>
+      </div>
       <GenerateItinerary @submit="handleSubmit" />
     </div>
   </div>
@@ -317,9 +334,9 @@ function handleSubmit() {
 }
 
 .error-popup {
-  width: 100%;
+  width: 95%;
   margin-top: 24px;
-  padding: 16px 18px;
+  padding: 12px 15px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -380,14 +397,4 @@ function handleSubmit() {
     width: 100%;
   }
 }
-
-html,
-body,
-#app {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-}
-
 </style>
