@@ -1,23 +1,65 @@
 <template>
-  <div class="grid">
-    <button
-      v-for="option in options"
-      :key="option.id"
-      type="button"
-      class="card"
-      :class="{ selected: modelValue.includes(option.id) }"
-      @click="toggle(option.id)"
-    >
-      <component :is="option.icon" :size="20" :stroke-width="1.5" class="icon" />
-      <span class="label">{{ option.label }}</span>
-    </button>
+  <div class="experience-selector">
+    <div class="grid-wrapper">
+      <div class="grid">
+        <button
+          v-for="option in options"
+          :key="option.id"
+          type="button"
+          class="card"
+          :class="{ selected: modelValue.includes(option.id) }"
+          @click="toggle(option.id)"
+        >
+          <component :is="option.icon" :size="20" :stroke-width="1.5" class="icon" />
+          <span class="label">{{ option.label }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button
+        type="button"
+        class="text-button"
+        @click="unselectAll"
+        :disabled="!modelValue.length"
+      >
+        Unselect All
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { GlassWater, Landmark, UtensilsCrossed, Mountain, Users, DollarSign } from 'lucide-vue-next'
+import {
+  GlassWater,
+  Landmark,
+  UtensilsCrossed,
+  Mountain,
+  Users,
+  DollarSign,
+  Music,
+  Trees,
+  ShoppingBag,
+  Dumbbell,
+  Camera,
+  Wine,
+  Waves,
+  Building2,
+  Bus,
+  Theater,
+  Bike,
+  Sun,
+  Plane,
+  Coffee,
+  Tent,
+  FerrisWheel,
+  BookOpen,
+  ShipWheel,
+  Trophy,
+  Palette,
+} from 'lucide-vue-next'
 
-const { modelValue } = defineProps({
+const props = defineProps({
   modelValue: {
     type: Array,
     default: () => [],
@@ -33,10 +75,30 @@ const options = [
   { id: 'outdoor', icon: Mountain, label: 'Outdoor Adventures' },
   { id: 'family', icon: Users, label: 'Family-Friendly' },
   { id: 'budget', icon: DollarSign, label: 'Budget-Focused' },
+  { id: 'live-music', icon: Music, label: 'Live Music' },
+  { id: 'parks', icon: Trees, label: 'Parks & Nature' },
+  { id: 'shopping', icon: ShoppingBag, label: 'Shopping' },
+  { id: 'fitness', icon: Dumbbell, label: 'Fitness & Wellness' },
+  { id: 'photography', icon: Camera, label: 'Scenic Views' },
+  { id: 'wine', icon: Wine, label: 'Wine & Tasting' },
+  { id: 'beaches', icon: Waves, label: 'Beaches & Water' },
+  { id: 'history', icon: Building2, label: 'History & Landmarks' },
+  { id: 'day-trips', icon: Bus, label: 'Day Trips' },
+  { id: 'arts', icon: Theater, label: 'Arts & Theater' },
+  { id: 'biking', icon: Bike, label: 'Biking' },
+  { id: 'relaxation', icon: Sun, label: 'Relaxation' },
+  { id: 'travel', icon: Plane, label: 'Travel Hotspots' },
+  { id: 'cafes', icon: Coffee, label: 'Cafés & Brunch' },
+  { id: 'camping', icon: Tent, label: 'Camping' },
+  { id: 'theme-parks', icon: FerrisWheel, label: 'Theme Parks' },
+  { id: 'reading', icon: BookOpen, label: 'Bookstores & Reading' },
+  { id: 'boating', icon: ShipWheel, label: 'Boating & Cruises' },
+  { id: 'sports', icon: Trophy, label: 'Sports & Recreation' },
+  { id: 'creative', icon: Palette, label: 'Creative Experiences' },
 ]
 
 function toggle(id) {
-  const updated = [...modelValue]
+  const updated = [...props.modelValue]
   const idx = updated.indexOf(id)
 
   if (idx === -1) {
@@ -47,22 +109,32 @@ function toggle(id) {
 
   emit('update:modelValue', updated)
 }
+
+function unselectAll() {
+  emit('update:modelValue', [])
+}
 </script>
 
 <style scoped>
 .experience-selector {
   font-family: 'Inter', sans-serif;
-  max-width: 800px;
-  padding: 24px;
+  width: 100%;
+}
+
+.grid-wrapper {
+  max-height: 345px; /* adjust until bottom row is slightly clipped */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  margin-top: 10px;
+  padding: 12px;
+  padding-bottom: 28px;
   width: 100%;
-  margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
 .card {
@@ -76,6 +148,9 @@ function toggle(id) {
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-height: 60px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card:hover:not(.selected) {
@@ -95,7 +170,7 @@ function toggle(id) {
 
 .card.selected .label,
 .card.selected .icon {
-  color: rgb(255, 255, 255);
+  color: #ffffff;
 }
 
 .icon {
@@ -104,9 +179,33 @@ function toggle(id) {
 }
 
 .label {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 15px;
   font-weight: 300;
   color: #000000;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #172554;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.text-button:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+  text-decoration: none;
 }
 </style>
