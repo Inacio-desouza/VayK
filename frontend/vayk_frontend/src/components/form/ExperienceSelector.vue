@@ -139,75 +139,10 @@ function unselectAll() {
   box-sizing: border-box;
 }
 
-.card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 18px 20px;
-  background: #fff;
-  border: 1.5px solid #dcdcdc;
-  border-radius: 0px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 60px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.card:hover:not(.selected) {
-  border-color: #9ca3af;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px) scale(1.01);
-}
-
-.card:active {
-  transform: scale(0.98);
-}
-
-.card.selected {
-  background: #172554;
-  border-color: #0c1630;
-}
-
-.card.selected .label,
-.card.selected .icon {
-  color: #ffffff;
-}
-
-.icon {
-  color: #000000;
-  flex-shrink: 0;
-}
-
-.label {
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 300;
-  color: #000000;
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   margin-top: 14px;
-}
-
-.text-button {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  color: #172554;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.text-button:disabled {
-  color: #9ca3af;
-  cursor: not-allowed;
-  text-decoration: none;
 }
 </style>

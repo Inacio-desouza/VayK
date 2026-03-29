@@ -76,40 +76,6 @@ li {
   color: #334155;
 }
 
-/* copied/adapted from ExperienceSelector */
-.card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 18px 20px;
-  background: #fff;
-  border: 1.5px solid #dcdcdc;
-  border-radius: 0px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 60px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.card:hover {
-  border-color: #9ca3af;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px) scale(1.01);
-}
-
-.card:active {
-  transform: scale(0.98);
-}
-
-.label {
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 300;
-  color: #000000;
-}
-
 .home-card {
   justify-content: center;
   margin-top: 24px;
