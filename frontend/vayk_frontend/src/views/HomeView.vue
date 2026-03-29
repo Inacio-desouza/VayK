@@ -80,7 +80,10 @@ watch(
 function validateForm() {
   errors.destination = ''
   errors.arrivalDate = ''
-  errors.departureDate = ''
+
+  if (errors.departureDate === 'Please select a departure date.') {
+    errors.departureDate = ''
+  }
 
   let isValid = true
   const popupMessages = []
@@ -142,7 +145,6 @@ function handleSubmit() {
 <template>
   <div class="page">
     <div class="form-container">
-      <!-- <img class="logo-img" :src="logoUrl" alt="VayK logo" /> -->
       <img
         class="logo-img"
         :src="logoUrl"
@@ -191,7 +193,10 @@ function handleSubmit() {
         <h3 class="form-question" style="margin-bottom: 0px">
           What are your interests?
         </h3>
-        <h4 class="form-question" style="font-size: 14px; margin-top: 10px; margin-left: 1px; margin-bottom: 12px;">
+        <h4
+          class="form-question"
+          style="font-size: 14px; margin-top: 10px; margin-left: 1px; margin-bottom: 12px;"
+        >
           Select all that interest you
         </h4>
         <ExperienceSelector v-model="tripForm.interests" />
@@ -203,10 +208,24 @@ function handleSubmit() {
         <h3 class="form-question">
           Add additional preferences below
         </h3>
-        <h4 class="form-question" style="font-size: 14px;  margin-bottom: 10px;">
+        <h4 class="form-question" style="font-size: 14px; margin-bottom: 10px;">
           Tell us more about yourself and your interests
         </h4>
         <PreferenceInput v-model="tripForm.preferences" />
+      </div>
+
+      <div v-if="submitPopup.show" class="error-popup">
+        <div class="error-popup-text">
+          <strong>Please fix the following:</strong>
+          <ul>
+            <li v-for="message in submitPopup.messages" :key="message">
+              {{ message }}
+            </li>
+          </ul>
+        </div>
+        <button type="button" class="error-popup-close" @click="closePopup">
+          ×
+        </button>
       </div>
 
       <GenerateItinerary @submit="handleSubmit" />
