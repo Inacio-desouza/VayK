@@ -65,14 +65,17 @@ watch(
   () => [tripForm.arrivalDate, tripForm.departureDate],
   ([arrival, departure]) => {
     if (!arrival || !departure) {
-      if (errors.departureDate === 'Departure date must be after arrival date.') {
+      if (errors.departureDate === 'Departure date cannot be before arrival date.') {
         errors.departureDate = ''
       }
       return
     }
 
-    if (departure <= arrival) {
-      errors.departureDate = 'Departure date must be after arrival date.'
+    const arrivalDate = new Date(arrival)
+    const departureDate = new Date(departure)
+
+    if (departureDate < arrivalDate) {
+      errors.departureDate = 'Departure date cannot be before arrival date.'
     } else {
       errors.departureDate = ''
     }
@@ -119,19 +122,20 @@ function validateForm() {
     isValid = false
   }
 
-  if (
-    tripForm.arrivalDate &&
-    tripForm.departureDate &&
-    tripForm.departureDate <= tripForm.arrivalDate
-  ) {
-    errors.departureDate = 'Departure date must be after arrival date.'
+  if (tripForm.arrivalDate && tripForm.departureDate) {
+  const arrivalDate = new Date(tripForm.arrivalDate)
+  const departureDate = new Date(tripForm.departureDate)
 
-    if (!popupMessages.includes('Departure date must be after arrival date.')) {
-      popupMessages.push('Departure date must be after arrival date.')
+  if (departureDate < arrivalDate) {
+    errors.departureDate = 'Departure date cannot be before arrival date.'
+
+    if (!popupMessages.includes('Departure date cannot be before arrival date.')) {
+      popupMessages.push('Departure date cannot be before arrival date.')
     }
 
     isValid = false
   }
+}
 
   return { isValid, popupMessages }
 }
