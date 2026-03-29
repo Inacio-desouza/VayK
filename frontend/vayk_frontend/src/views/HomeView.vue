@@ -260,19 +260,22 @@ function handleSubmit() {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 16px 16px;
+  padding: 40px 20px;
   box-sizing: border-box;
   color: black;
-  background: white;
+  background: var(--page-bg);
 }
 
 .form-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 800px;
+  max-width: 980px;
   box-sizing: border-box;
-  padding: 20px;
+  padding: 42px 40px 36px;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
 }
 
 .logo-img {
@@ -280,24 +283,16 @@ function handleSubmit() {
   max-width: 400px;
   height: auto;
   align-self: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   display: block;
-}
-
-.logo-text {
-  font-family: 'Inter', sans-serif;
-  font-size: 80px;
-  font-weight: 300;
-  color: #000000;
-  text-align: center;
-  margin-bottom: 20px;
 }
 
 .subheader {
   font-family: 'Inter', sans-serif;
   font-weight: 300;
   font-size: 22px;
-  margin-top: 1%;
+  margin-top: 0;
+  margin-bottom: 18px;
   align-self: center;
   text-align: center;
 }
@@ -306,13 +301,13 @@ function handleSubmit() {
   font-family: 'Inter', sans-serif;
   font-weight: 300;
   font-size: 18px;
-  margin-top: 26px;
+  margin-top: 24px;
   margin-bottom: 10px;
 }
 
 .line {
-  border-bottom: 1px solid #939393;
-  margin-top: 30px;
+  border-bottom: 1px solid #d1d5db;
+  margin-top: 28px;
   margin-bottom: 10px;
   width: 100%;
 }
@@ -433,7 +428,12 @@ function handleSubmit() {
 
 @media (max-width: 600px) {
   .page {
-    padding: 24px 12px;
+    padding: 20px 12px;
+  }
+
+  .form-container {
+    padding: 24px 18px 22px;
+    border-radius: 20px;
   }
 
   .date-row {
@@ -447,6 +447,10 @@ function handleSubmit() {
 
   .field-error-box {
     width: 100%;
+  }
+
+  .subheader {
+    font-size: 18px;
   }
 }
 </style>
