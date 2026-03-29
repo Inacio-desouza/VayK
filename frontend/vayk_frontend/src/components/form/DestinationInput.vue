@@ -1,6 +1,7 @@
 <template>
   <div class="destination-input-wrapper">
     <input
+      ref="inputRef"
       v-model="searchText"
       type="text"
       placeholder="Enter destination"
@@ -8,6 +9,15 @@
       @focus="handleFocus"
       @blur="handleBlur"
     />
+
+    <button
+      v-if="props.modelValue"
+      type="button"
+      class="clear-destination"
+      @click="clearDestination"
+    >
+      Clear destination
+    </button>
 
     <div v-if="showDropdown && suggestions.length" class="dropdown">
       <button
@@ -24,14 +34,23 @@
       </button>
     </div>
 
-    <div v-if="showDropdown && searchText.trim().length >= 2 && !loading && !suggestions.length" class="dropdown empty-state">
+    <div
+      v-if="
+        showDropdown &&
+        searchText.trim().length >= 2 &&
+        !loading &&
+        !suggestions.length &&
+        searchText.trim() !== selectedDisplayName
+      "
+      class="dropdown empty-state"
+    >
       No matching destinations found
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed, nextTick } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -42,16 +61,18 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-
+const inputRef = ref(null)
 const searchText = ref('')
 const suggestions = ref([])
 const loading = ref(false)
 const showDropdown = ref(false)
 
+const selectedDisplayName = computed(() => {
+  return props.modelValue?.displayName || props.modelValue?.name || ''
+})
 
 let debounceTimeout = null
 
-// --- Sync input with selected destination ---
 watch(
   () => props.modelValue,
   (newValue) => {
@@ -65,27 +86,42 @@ watch(
   { immediate: true }
 )
 
-// --- Handle typing + trigger search ---
 watch(searchText, (newValue) => {
+  const trimmedValue = newValue.trim()
+
+  if (!trimmedValue) {
+    suggestions.value = []
+    showDropdown.value = false
+    emit('update:modelValue', null)
+    clearTimeout(debounceTimeout)
+    return
+  }
+
+  if (trimmedValue === selectedDisplayName.value) {
+    suggestions.value = []
+    showDropdown.value = false
+    clearTimeout(debounceTimeout)
+    return
+  }
+
   showDropdown.value = true
 
-  if (props.modelValue && newValue !== (props.modelValue.displayName || props.modelValue.name || '')) {
+  if (props.modelValue) {
     emit('update:modelValue', null)
   }
 
   clearTimeout(debounceTimeout)
 
-  if (!newValue.trim() || newValue.trim().length < 2) {
+  if (trimmedValue.length < 2) {
     suggestions.value = []
     return
   }
 
   debounceTimeout = setTimeout(() => {
-    fetchSuggestions(newValue.trim())
+    fetchSuggestions(trimmedValue)
   }, 300)
 })
 
-// --- Fetch destination suggestions (API) ---
 async function fetchSuggestions(query) {
   loading.value = true
 
@@ -105,11 +141,7 @@ async function fetchSuggestions(query) {
         lon: place.longitude ?? null,
         countryCode: place.country_code || '',
         timezone: place.timezone || '',
-        displayName: [
-          place.name,
-          place.admin1,
-          place.country
-        ].filter(Boolean).join(', ')
+        displayName: [place.name, place.admin1, place.country].filter(Boolean).join(', ')
       }))
     } else {
       suggestions.value = []
@@ -122,15 +154,28 @@ async function fetchSuggestions(query) {
   }
 }
 
-// --- Select a destination from dropdown ---
 function selectDestination(place) {
   emit('update:modelValue', place)
   searchText.value = place.displayName || place.name
   suggestions.value = []
   showDropdown.value = false
+
+  nextTick(() => {
+    inputRef.value?.blur()
+  })
 }
 
-// --- Show dropdown on focus ---
+function clearDestination() {
+  emit('update:modelValue', null)
+  searchText.value = ''
+  suggestions.value = []
+  showDropdown.value = false
+
+  nextTick(() => {
+    inputRef.value?.focus()
+  })
+}
+
 function handleFocus() {
   if (suggestions.value.length) {
     showDropdown.value = true
@@ -161,6 +206,22 @@ function handleBlur() {
 .destination-input:focus {
   outline: none;
   border-color: #000000;
+}
+
+.clear-destination {
+  margin-top: 8px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  font-family: "Inter";
+  color: #666;
+  cursor: pointer;
+}
+
+.clear-destination:hover {
+  color: #111;
+  text-decoration: underline;
 }
 
 .dropdown {
