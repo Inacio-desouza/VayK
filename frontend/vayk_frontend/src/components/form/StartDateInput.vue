@@ -1,14 +1,3 @@
-<template>
-  <div class="date-input-wrapper">
-    <input
-      :value="modelValue"
-      @input="emit('update:modelValue', $event.target.value)"
-      type="date"
-      class="date-input"
-    />
-  </div>
-</template>
-
 <script setup>
 defineProps({
   modelValue: {
@@ -19,6 +8,17 @@ defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 </script>
+
+<template>
+  <div class="date-input-wrapper">
+    <input
+      :value="modelValue"
+      @input="emit('update:modelValue', $event.target.value)"
+      type="date"
+      class="date-input"
+    />
+  </div>
+</template>
 
 <style scoped>
 .date-input-wrapper {

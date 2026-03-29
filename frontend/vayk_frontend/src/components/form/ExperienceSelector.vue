@@ -122,10 +122,12 @@ function unselectAll() {
 }
 
 .grid-wrapper {
-  max-height: 345px; /* adjust until bottom row is slightly clipped */
+  position: relative;
+  max-height: 372px;
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 
 .grid {
   display: grid;

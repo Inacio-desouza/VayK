@@ -1,5 +1,7 @@
 <script setup>
 import { reactive, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { tripStore } from '../stores/tripStores'
 
 import DestinationInput from '../components/form/DestinationInput.vue'
 import StartDateInput from '../components/form/StartDateInput.vue'
@@ -9,6 +11,7 @@ import PreferenceInput from '../components/form/PreferenceInput.vue'
 import GenerateItinerary from '../components/form/GenerateItinerary.vue'
 
 import logoUrl from '../assets/navy_logo.png'
+const router = useRouter()
 
 const tripForm = reactive({
   destination: null,
@@ -148,7 +151,15 @@ function handleSubmit() {
   }
 
   closePopup()
+  
+   // Save form to store
+  tripStore.resetGenerationState()
+  tripStore.setTripForm(tripForm)
+
   console.log('Submitting trip form:', JSON.parse(JSON.stringify(tripForm)))
+
+  // Go to loading screen
+  router.push('/loading')
 }
 </script>
 

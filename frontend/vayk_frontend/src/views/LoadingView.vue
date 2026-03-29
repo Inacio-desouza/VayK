@@ -16,7 +16,7 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { tripStore } from '@/stores/tripStore'
+import { tripStore } from '../stores/tripStores'
 
 const router = useRouter()
 
@@ -44,7 +44,8 @@ async function generateItinerary() {
     tripStore.setGenerationError('')
 
     // TEMPORARY: simulate backend delay
-    await new Promise((resolve) => setTimeout(resolve, 2500))
+    // Later, replace this with a real fetch call
+    await new Promise((resolve) => setTimeout(resolve, 2500)) 
 
     // TEMPORARY: fake itinerary data
     tripStore.setGeneratedItinerary({
