@@ -129,7 +129,6 @@ function handleSubmit() {
 <template>
   <div class="page">
     <div class="form-container">
-      <!-- <img class="logo-img" :src="logoUrl" alt="VayK logo" /> -->
       <img
         class="logo-img"
         :src="logoUrl"
@@ -142,6 +141,11 @@ function handleSubmit() {
         <h3 class="form-question">Where do you want to go?</h3>
         <DestinationInput v-model="tripForm.destination" />
 
+        <div v-if="errors.destination" class="field-error-box">
+          <span class="field-error-icon">!</span>
+          <span>{{ errors.destination }}</span>
+        </div>
+
         <h3 class="form-question">When are you traveling?</h3>
 
         <div class="date-row">
@@ -149,10 +153,21 @@ function handleSubmit() {
             <StartDateInput v-model="tripForm.arrivalDate" />
             <h4 class="form-question small-label">Arrival Date</h4>
           </div>
+
           <div>
             <EndDateInput v-model="tripForm.departureDate" />
             <h4 class="form-question small-label">Departure Date</h4>
           </div>
+        </div>
+
+        <div v-if="errors.arrivalDate" class="field-error-box date-error-left">
+          <span class="field-error-icon">!</span>
+          <span>{{ errors.arrivalDate }}</span>
+        </div>
+
+        <div v-if="errors.departureDate" class="field-error-box date-error-left">
+          <span class="field-error-icon">!</span>
+          <span>{{ errors.departureDate }}</span>
         </div>
       </div>
 
@@ -162,7 +177,10 @@ function handleSubmit() {
         <h3 class="form-question" style="margin-bottom: 0px">
           What are your interests?
         </h3>
-        <h4 class="form-question" style="font-size: 14px; margin-top: 10px; margin-left: 1px; margin-bottom: 12px;">
+        <h4
+          class="form-question"
+          style="font-size: 14px; margin-top: 10px; margin-left: 1px; margin-bottom: 12px;"
+        >
           Select all that interest you
         </h4>
         <ExperienceSelector v-model="tripForm.interests" />
@@ -174,10 +192,24 @@ function handleSubmit() {
         <h3 class="form-question">
           Add additional preferences below
         </h3>
-        <h4 class="form-question" style="font-size: 14px;  margin-bottom: 10px;">
+        <h4 class="form-question" style="font-size: 14px; margin-bottom: 10px;">
           Tell us more about yourself and your interests
         </h4>
         <PreferenceInput v-model="tripForm.preferences" />
+      </div>
+
+      <div v-if="submitPopup.show" class="error-popup">
+        <div class="error-popup-text">
+          <strong>Please fix the following:</strong>
+          <ul>
+            <li v-for="message in submitPopup.messages" :key="message">
+              {{ message }}
+            </li>
+          </ul>
+        </div>
+        <button type="button" class="error-popup-close" @click="closePopup">
+          ×
+        </button>
       </div>
 
       <GenerateItinerary @submit="handleSubmit" />
