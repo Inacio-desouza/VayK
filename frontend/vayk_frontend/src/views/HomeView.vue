@@ -76,6 +76,16 @@ watch(
   },
 )
 
+watch(() => tripForm.arrivalDate, (arrival) => {
+  const today = new Date().toISOString().split('T')[0]
+
+  if (arrival && arrival < today) {
+    errors.arrivalDate = 'Arrival date cannot be in the past.'
+  } else if (errors.arrivalDate === 'Arrival date cannot be in the past.') {
+    errors.arrivalDate = ''
+  }
+})
+
 // --- Validate form inputs ---
 function validateForm() {
   errors.destination = ''
