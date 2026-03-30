@@ -17,6 +17,7 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { tripStore } from '../stores/tripStores'
+import mockPlaces from '../mock/places.json'
 
 const router = useRouter()
 
@@ -43,29 +44,34 @@ async function generateItinerary() {
     tripStore.setGenerating(true)
     tripStore.setGenerationError('')
 
-    // TEMPORARY: simulate backend delay
-    // Later, replace this with a real fetch call
-    await new Promise((resolve) => setTimeout(resolve, 2500)) 
+    const { destination, arrivalDate, departureDate, interests, preferences } = tripStore.tripForm
 
-    // TEMPORARY: fake itinerary data
-    tripStore.setGeneratedItinerary({
-      title: `Trip to ${tripStore.tripForm.destination?.displayName || 'your destination'}`,
-      activities: [
-        'Morning walking tour',
-        'Lunch at a local restaurant',
-        'Afternoon museum visit',
-        'Evening live event',
-      ],
+    const res = await fetch('http://localhost:8000/data_aquisition/itinerary/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        lat: destination.lat,
+        lon: destination.lon,
+        destination: destination.displayName,
+        arrivalDate,
+        departureDate,
+        interests,
+        preferences,
+      }),
     })
 
+    if (!res.ok) throw new Error('Server error')
+
+    const places = await res.json()
+    tripStore.setGeneratedItinerary(places)
     tripStore.setGenerating(false)
     router.push('/activities')
   } catch (error) {
+    // Backend not running — use mock data so the UI flow can still be tested
+    console.warn('Backend unavailable, falling back to mock data:', error)
+    tripStore.setGeneratedItinerary(mockPlaces)
     tripStore.setGenerating(false)
-    tripStore.setGenerationError('Something went wrong while generating your itinerary.')
-    setTimeout(() => {
-      router.push('/')
-    }, 2000)
+    router.push('/activities')
   }
 }
 
