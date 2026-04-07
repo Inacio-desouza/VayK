@@ -1,7 +1,9 @@
+from datetime import date
 import logging
 from dataclasses import dataclass, field
 from typing import Optional
 from django.conf import settings
+from data_utils import parse_serpapi_date
 import serpapi
 
 logger = logging.getLogger(__name__)
@@ -54,11 +56,12 @@ class SerpApiService:
             location = ", ".join(address_parts)  # "Night Club 101, 101 Avenue A, New York, NY"
 
             venue = event.get("venue", {})
-            date = event.get("date", {})
+            raw_date = date.get("when") or date.get("start_date", "")
 
             normalized.append(EventResult(
                 title=event.get("title", ""),
-                date=date.get("when") or date.get("start_date", ""),
+                date=raw_date,
+                start_dt=parse_serpapi_date(raw_date),
                 venue=venue.get("name", ""),
                 location=location,
                 url=event.get("link"),
