@@ -48,6 +48,7 @@ def get_itinerary(request):
         # Example response
         return JsonResponse({
             "itinerary": itinerary["itinerary"]
+            "alternates": itinerary["alternates"]
         })
 
     return JsonResponse({"error": "POST request required"}, status=400)

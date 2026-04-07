@@ -15,51 +15,60 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
     model_id = "gemini-3.1-pro"
 
     config = types.GenerateContentConfig(
-    system_instruction="""
-    You are a travel itinerary generator.
+        system_instruction="""
+        You are a travel itinerary generator.
 
-    You will receive:
-    - arrival date/time
-    - departure date/time
-    - user interests
-    - user preferences
-    - a list of activities
-    - a list of events
+        You will receive:
+        - arrival date/time
+        - departure date/time
+        - user interests
+        - user preferences
+        - a list of activities
+        - a list of events
 
-    Your task is to generate a travel itinerary within the arrival and departure range.
+        Your task is to generate a travel itinerary within the arrival and departure range.
 
-    Rules:
-    1. ONLY use the activities and events provided. Do not invent new items.
-    2. The itinerary must occur between the arrival and departure times.
-    3. Events must be scheduled on their provided date/time.
-    4. Activities may be scheduled at any reasonable time within the date range.
-    5. Select items that best match the user's interests and preferences.
-    6. Do not duplicate the same event or activity.
-    7. Mix activities and events when possible to create a balanced itinerary.
-    8. The itinerary must be sorted chronologically by date_time.
+        Rules:
+        1. ONLY use the activities and events provided. Do not invent new items.
+        2. The itinerary must occur between the arrival and departure times.
+        3. Events must be scheduled on their provided date/time.
+        4. Activities may be scheduled at any reasonable time within the date range.
+        5. Select items that best match the user's interests and preferences.
+        6. Do not duplicate the same event or activity.
+        7. Mix activities and events when possible to create a balanced itinerary.
+        8. The itinerary must be sorted chronologically by date_time.
 
-    Field rules:
+        Additionally generate an "alternates" list.
 
-    For activities:
-    - name = activity name
-    - date_time = generated time within trip window
-    - address = activity address
-    - description = null
-    - rating = activity rating
-    - reviews = activity num_reviews
-    - url = null
+        Alternates Rules:
+        1. Alternates must contain exactly 10 items.
+        2. Items in alternates MUST NOT appear in the itinerary.
+        3. Only use activities or events from the provided lists.
+        4. Choose items that best match the user's interests and preferences.
+        5. Do not assign a date_time for activities in alternates but time provided for events should be maintained.
 
-    For events:
-    - name = event title
-    - date_time = event date
-    - address = venue or location
-    - description = event description
-    - rating = null
-    - reviews = null
-    - url = event url
+        Field rules:
 
-    Return ONLY a JSON object. Do not include explanations or extra text.
-    """,
+        For activities:
+        - name = activity name
+        - date_time = generated time within trip window for itinerary only. null if alternate
+        - address = activity address
+        - description = null
+        - rating = activity rating
+        - reviews = activity num_reviews
+        - url = null
+
+        For events:
+        - name = event title
+        - date_time = event date
+        - address = venue or location
+        - description = event description
+        - rating = null
+        - reviews = null
+        - url = event url
+
+        Return ONLY a JSON object. Do not include explanations or extra text.
+        """,
 
         temperature=0.3,
         response_mime_type="application/json",
@@ -90,9 +99,34 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
                             "url"
                         ]
                     }
+                },
+
+                "alternates": {
+                    "type": "ARRAY",
+                    "minItems": 10,
+                    "maxItems": 10,
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "name": {"type": "STRING"},
+                            "address": {"type": "STRING"},
+                            "description": {"type": ["STRING", "NULL"]},
+                            "rating": {"type": ["NUMBER", "NULL"]},
+                            "reviews": {"type": ["NUMBER", "NULL"]},
+                            "url": {"type": ["STRING", "NULL"]}
+                        },
+                        "required": [
+                            "name",
+                            "address",
+                            "description",
+                            "rating",
+                            "reviews",
+                            "url"
+                        ]
+                    }
                 }
             },
-            "required": ["itinerary"]
+            "required": ["itinerary", "alternates"]
         }
     )
 
