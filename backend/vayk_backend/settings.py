@@ -22,6 +22,7 @@ load_dotenv(BASE_DIR / ".env")
 PLACES_KEY = os.getenv("PLACES_KEY")
 GEMINI_KEY = os.getenv("GEMINI_KEY")
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
+TICKETMASTER_KEY = os.getenv("TICKETMASTER_KEY")
 
 
 # Quick-start development settings - unsuitable for production
@@ -45,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'data_aquisition',
-    'events',
+    'events'
 ]
 
 MIDDLEWARE = [

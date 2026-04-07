@@ -23,7 +23,7 @@ class TicketmasterService:
     BASE_URL = "https://app.ticketmaster.com/discovery/v2/events.json"
 
     def __init__(self):
-        self.api_key = settings.TICKETMASTER_API_KEY
+        self.api_key = settings.TICKETMASTER_KEY
 
     ''' Fetch events based on destination and arrival date, returning a list of normalized EventResult objects '''
     def fetch_events(
