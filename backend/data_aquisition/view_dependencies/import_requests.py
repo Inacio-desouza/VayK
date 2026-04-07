@@ -15,15 +15,20 @@ if not API_KEY:
 SEARCH_RADIUS_MILES = 30
 GRID_SIZE = 3
 
-MIN_REVIEWS = 75
+MIN_REVIEWS = 500
 
-PAGE_SCORE_THRESHOLD = 45
+PAGE_SCORE_THRESHOLD = 60
 MAX_PAGES = 3
 
 URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
 
 MILES_TO_METERS = 1609.34
 
+PLACE_TYPES = [
+    "tourist_attraction",
+    "bar",
+    "restaurant"
+]
 
 # =====================================
 # SCORE FUNCTION
@@ -97,53 +102,59 @@ def fetch_places(lat, lng, radius):
 
     places = []
 
-    params = {
-        "location": f"{lat},{lng}",
-        "radius": radius,
-        "type": "tourist_attraction",
-        "key": API_KEY
-    }
-
-    page_count = 0
-
-    while True:
-
-        response = requests.get(URL, params=params).json()
-
-        results = response.get("results", [])
-
-        places.extend(results)
-
-        page_count += 1
-
-        scores = []
-
-        for p in results:
-
-            rating = p.get("rating", 0)
-            reviews = p.get("user_ratings_total", 0)
-
-            scores.append(compute_score(rating, reviews))
-
-        avg_score = sum(scores) / max(len(scores), 1)
-
-        token = response.get("next_page_token")
-
-        if not token:
-            break
-
-        if avg_score < PAGE_SCORE_THRESHOLD:
-            break
-
-        if page_count >= MAX_PAGES:
-            break
-
-        time.sleep(2)
+    for place_type in PLACE_TYPES:
 
         params = {
-            "pagetoken": token,
+            "location": f"{lat},{lng}",
+            "radius": radius,
+            "type": place_type,
             "key": API_KEY
         }
+
+        page_count = 0
+
+        while True:
+
+            response = requests.get(URL, params=params).json()
+
+            results = response.get("results", [])
+
+            # store the type so later filters can use it
+            for r in results:
+                r["place_type"] = place_type
+
+            places.extend(results)
+
+            page_count += 1
+
+            scores = []
+
+            for p in results:
+
+                rating = p.get("rating", 0)
+                reviews = p.get("user_ratings_total", 0)
+
+                scores.append(compute_score(rating, reviews))
+
+            avg_score = sum(scores) / max(len(scores), 1)
+
+            token = response.get("next_page_token")
+
+            if not token:
+                break
+
+            if avg_score < PAGE_SCORE_THRESHOLD:
+                break
+
+            if page_count >= MAX_PAGES:
+                break
+
+            time.sleep(2)
+
+            params = {
+                "pagetoken": token,
+                "key": API_KEY
+            }
 
     return places
 
@@ -168,8 +179,15 @@ def collect_places(LAT, LNG):
 
             reviews = p.get("user_ratings_total", 0)
             rating = p.get("rating", 0)
+            ptype = p["place_type"]
 
-            if reviews < MIN_REVIEWS:
+            if ptype == "restaurant" and reviews < 10 * MIN_REVIEWS:
+                continue
+
+            if ptype == "bar" and reviews < 10 * MIN_REVIEWS:
+                continue
+
+            if ptype == "tourist_attraction" and reviews < MIN_REVIEWS:
                 continue
 
             place_id = p["place_id"]
@@ -216,7 +234,7 @@ def get_top_places(LAT, LNG):
 
 if __name__ == "__main__":
 
-    results = get_top_places()
+    results = get_top_places(40.0194, -105.2527)
 
     print("\nTop Tourist Attractions:\n")
 
