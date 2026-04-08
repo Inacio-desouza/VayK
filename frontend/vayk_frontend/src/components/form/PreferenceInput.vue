@@ -1,46 +1,129 @@
 <template>
-  <div class="preference-input-wrapper" style="width: 100%;">
-    <!-- Main text input field for user to type destination -->
+  <div class="preference-input-wrapper">
+    <Transition name="fade" mode="out-in">
+      <div
+        v-if="!modelValue && !isFocused"
+        class="placeholder-overlay"
+        :key="groupKey"
+      >
+        e.g., {{ visibleSuggestions }}...
+      </div>
+    </Transition>
+
     <textarea
-      v-model="preferences"
-      placeholder="e.g., I prefer local experiences over tourist spots, I'm vegetarian, I want to avoid crowds..."
+      :value="modelValue"
+      @input="handleInput"
+      @focus="isFocused = true"
+      @blur="isFocused = false"
+      placeholder=""
       class="preference-input"
       rows="6"
       maxlength="500"
-      ></textarea>
-      <!-- Character counter -->
+    ></textarea>
+
     <div class="character-counter">
-      {{ preferences.length }}/500
+      {{ modelValue.length }}/500
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { preferenceSuggestions } from '@/data/preferenceSuggestions'
 
-const preferences = ref('')
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const suggestions = preferenceSuggestions
+const currentStartIndex = ref(0)
+const isFocused = ref(false)
+const groupSize = 3
+let intervalId = null
+
+function handleInput(event) {
+  emit('update:modelValue', event.target.value)
+}
+
+const visibleSuggestions = computed(() => {
+  const items = []
+
+  for (let i = 0; i < groupSize; i++) {
+    const index = (currentStartIndex.value + i) % suggestions.length
+    items.push(suggestions[index])
+  }
+
+  return items.join(', ')
+})
+
+const groupKey = computed(() => {
+  return `${currentStartIndex.value}-${visibleSuggestions.value}`
+})
+
+function rotateSuggestionGroup() {
+  if (suggestions.length <= groupSize) return
+
+  const minJump = 2
+  const maxJump = 7
+  const jump = Math.floor(Math.random() * (maxJump - minJump + 1)) + minJump
+
+  currentStartIndex.value =
+    (currentStartIndex.value + jump) % suggestions.length
+}
+
+onMounted(() => {
+  intervalId = setInterval(() => {
+    if (!props.modelValue && !isFocused.value) {
+      rotateSuggestionGroup()
+    }
+  }, 4000)
+})
+
+onBeforeUnmount(() => {
+  if (intervalId) clearInterval(intervalId)
+})
 </script>
 
 <style scoped>
-/* Wrapper container - positioned relative so dropdown can be positioned absolute */
 .preference-input-wrapper {
   position: relative;
   width: 100%;
 }
 
-/* Main input field styling */
 .preference-input {
-  width: 100%;
+  width: 96%;
   padding: 12px;
   font-size: 14px;
   border: 1px solid #ccc;
   font-family: "Inter";
+  resize: vertical;
+  background: transparent;
+  position: relative;
+  z-index: 2;
 }
 
-/* Styling when input field is focused (active) */
 .preference-input:focus {
   outline: none;
   border-color: #000000;
+}
+
+.placeholder-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 24px;
+  font-size: 14px;
+  font-family: "Inter";
+  color: #777;
+  pointer-events: none;
+  z-index: 1;
+  line-height: 1.5;
+  white-space: normal;
 }
 
 .character-counter {
@@ -51,5 +134,30 @@ const preferences = ref('')
   margin-top: 4px;
   padding-right: 12px;
   align-self: flex-end;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.fade-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 </style>

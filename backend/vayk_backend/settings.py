@@ -11,9 +11,18 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / ".env")
+
+PLACES_KEY = os.getenv("PLACES_KEY")
+GEMINI_KEY = os.getenv("GEMINI_KEY")
+SERPAPI_KEY = os.getenv("SERPAPI_KEY")
+TICKETMASTER_KEY = os.getenv("TICKETMASTER_KEY")
 
 
 # Quick-start development settings - unsuitable for production
@@ -34,9 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'data_aquisition',
+    'events'
 ]
 
 MIDDLEWARE = [
@@ -74,9 +84,13 @@ WSGI_APPLICATION = 'vayk_backend.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres.nxnrpeyoporpclqihjel",
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": "aws-1-us-east-1.pooler.supabase.com",
+        "PORT": "6543",
     }
 }
 

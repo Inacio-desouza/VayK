@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Eiffel Tower",
+    "address": "Champ de Mars, Paris",
+    "rating": 4.7,
+    "reviews": 280000,
+    "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/tourist_attraction-71.png",
+    "score": 95.2
+  },
+  {
+    "name": "Louvre Museum",
+    "address": "Rue de Rivoli, Paris",
+    "rating": 4.6,
+    "reviews": 210000,
+    "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/museum-71.png",
+    "score": 91.4
+  },
+  {
+    "name": "Notre-Dame Cathedral",
+    "address": "6 Parvis Notre-Dame, Paris",
+    "rating": 4.7,
+    "reviews": 195000,
+    "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/worship_general-71.png",
+    "score": 89.7
+  },
+  {
+    "name": "Musée d'Orsay",
+    "address": "1 Rue de la Légion d'Honneur, Paris",
+    "rating": 4.7,
+    "reviews": 160000,
+    "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/museum-71.png",
+    "score": 87.3
+  },
+  {
+    "name": "Sacré-Cœur Basilica",
+    "address": "35 Rue du Chevalier de la Barre, Paris",
+    "rating": 4.7,
+    "reviews": 145000,
+    "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/worship_general-71.png",
+    "score": 85.1
+  },
+  {
+    "name": "Palace of Versailles",
+    "address": "Place d'Armes, Versailles",
+    "rating": 4.6,
+    "reviews": 130000,
+    "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/tourist_attraction-71.png",
+    "score": 82.6
+  },
+  {
+    "name": "Arc de Triomphe",
+    "address": "Place Charles de Gaulle, Paris",
+    "rating": 4.6,
+    "reviews": 118000,
+    "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/tourist_attraction-71.png",
+    "score": 80.4
+  },
+  {
+    "name": "Centre Pompidou",
+    "address": "Place Georges-Pompidou, Paris",
+    "rating": 4.4,
+    "reviews": 95000,
+    "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/museum-71.png",
+    "score": 74.2
+  }
+]
