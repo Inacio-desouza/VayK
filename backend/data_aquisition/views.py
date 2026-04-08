@@ -19,15 +19,14 @@ def get_itinerary(request):
         interests = data.get("interests")
         preferences = data.get("preferences")
 
-        city_object = City.objects.filter(name=destination, latitude=lat, longitude=lon).exists()
-        if not city_object:
-            city_object = City.objects.get_or_create(
-                name=destination,
-                defaults={
-                    "latitude": lat,
-                    "longitude": lon,
-                }
-            )
+        city_exists = City.objects.filter(name=destination, latitude=lat, longitude=lon).exists()
+        city_object = City.objects.get_or_create(name=destination,
+                                                    defaults={
+                                                        "latitude": lat,
+                                                        "longitude": lon,
+                                                    }
+                                                )
+        if not city_exists:
             activities = get_top_places(lat, lon)
             for activity in activities:
                 Activity.objects.create(
@@ -47,7 +46,7 @@ def get_itinerary(request):
 
         # Example response
         return JsonResponse({
-            "itinerary": itinerary["itinerary"]
+            "itinerary": itinerary["itinerary"],
             "alternates": itinerary["alternates"]
         })
 
