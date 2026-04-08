@@ -6,11 +6,9 @@ import mockPlaces from '../mock/places.json'
 
 const router = useRouter()
 
-const allPlaces = tripStore.generatedItinerary ?? mockPlaces
-
-// Split into itinerary (first 4) and the rest go into the swap pool
-const itinerary = ref(allPlaces.slice(0, 4))
-const pool = ref(allPlaces.slice(4))
+const data = tripStore.generatedItinerary
+const itinerary = ref(data?.itinerary ?? mockPlaces.slice(0, 4))
+const pool = ref(data?.alternates ?? mockPlaces.slice(4))
 
 // --- Drag and drop state ---
 // We track where a drag started so we know which list to remove from on drop
@@ -74,7 +72,7 @@ function goHome() {
           <div class="info">
             <p class="name">{{ place.name }}</p>
             <p class="address">{{ place.address }}</p>
-            <p class="meta">⭐ {{ place.rating }} · {{ place.reviews.toLocaleString() }} reviews</p>
+            <p class="meta" v-if="place.rating">⭐ {{ place.rating }} · {{ (place.reviews ?? 0).toLocaleString() }} reviews</p>
           </div>
           <span class="drag-handle">⠿</span>
         </div>
@@ -104,7 +102,7 @@ function goHome() {
           <div class="info">
             <p class="name">{{ place.name }}</p>
             <p class="address">{{ place.address }}</p>
-            <p class="meta">⭐ {{ place.rating }} · {{ place.reviews.toLocaleString() }} reviews</p>
+            <p class="meta" v-if="place.rating">⭐ {{ place.rating }} · {{ (place.reviews ?? 0).toLocaleString() }} reviews</p>
           </div>
           <span class="drag-handle">⠿</span>
         </div>

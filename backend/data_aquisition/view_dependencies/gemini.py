@@ -1,6 +1,7 @@
 from google import genai
 from google.genai import types
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 import json
 
 API_KEY = settings.GEMINI_KEY
@@ -12,7 +13,7 @@ if not API_KEY:
 client = genai.Client(api_key=API_KEY)
 
 def generate_itinerary(activities, events, interests, preferences, arrival, departure):
-    model_id = "gemini-3.1-pro"
+    model_id = "gemini-2.5-flash"
 
     config = types.GenerateContentConfig(
         system_instruction="""
@@ -84,10 +85,10 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
                             "name": {"type": "STRING"},
                             "date_time": {"type": "STRING"},
                             "address": {"type": "STRING"},
-                            "description": {"type": ["STRING", "NULL"]},
-                            "rating": {"type": ["NUMBER", "NULL"]},
-                            "reviews": {"type": ["NUMBER", "NULL"]},
-                            "url": {"type": ["STRING", "NULL"]}
+                            "description": {"type": "STRING", "nullable": True},
+                            "rating": {"type": "NUMBER", "nullable": True},
+                            "reviews": {"type": "NUMBER", "nullable": True},
+                            "url": {"type": "STRING", "nullable": True}
                         },
                         "required": [
                             "name",
@@ -110,10 +111,10 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
                         "properties": {
                             "name": {"type": "STRING"},
                             "address": {"type": "STRING"},
-                            "description": {"type": ["STRING", "NULL"]},
-                            "rating": {"type": ["NUMBER", "NULL"]},
-                            "reviews": {"type": ["NUMBER", "NULL"]},
-                            "url": {"type": ["STRING", "NULL"]}
+                            "description": {"type": "STRING", "nullable": True},
+                            "rating": {"type": "NUMBER", "nullable": True},
+                            "reviews": {"type": "NUMBER", "nullable": True},
+                            "url": {"type": "STRING", "nullable": True}
                         },
                         "required": [
                             "name",
@@ -130,16 +131,18 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
         }
     )
 
+    prompt = json.dumps({
+        "arrival": arrival,
+        "departure": departure,
+        "interests": interests,
+        "preferences": preferences,
+        "activities": activities,
+        "events": events
+    }, cls=DjangoJSONEncoder)
+
     response = client.models.generate_content(
         model=model_id,
-        contents={
-            "arrival": arrival,
-            "departure": departure,
-            "interests": interests,
-            "preferences": preferences,
-            "activities": activities,
-            "events": events
-        },
+        contents=prompt,
         config=config
     )
 

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .view_dependencies.gemini import generate_itinerary
 from .view_dependencies.import_requests import get_top_places
 from .models import City, Activity
@@ -7,6 +8,7 @@ import json
 
 # Create your views here.
 
+@csrf_exempt
 def get_itinerary(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -19,14 +21,13 @@ def get_itinerary(request):
         interests = data.get("interests")
         preferences = data.get("preferences")
 
-        city_exists = City.objects.filter(name=destination, latitude=lat, longitude=lon).exists()
-        city_object = City.objects.get_or_create(name=destination,
+        city_object, created = City.objects.get_or_create(name=destination,
                                                     defaults={
                                                         "latitude": lat,
                                                         "longitude": lon,
                                                     }
                                                 )
-        if not city_exists:
+        if created:
             activities = get_top_places(lat, lon)
             for activity in activities:
                 Activity.objects.create(
