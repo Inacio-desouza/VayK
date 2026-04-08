@@ -8,5 +8,3 @@ Group Members
  - Samantha Taylormoore (Developer)
 
  To learn more about the project view the [project proposal](Reports/Project%20Proposal.docx.pdf).
-
-To learn more about the project view the [project proposal](Reports/Project%20Proposal.docx.pdf).
