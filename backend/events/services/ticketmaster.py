@@ -4,19 +4,10 @@ import requests
 from dataclasses import dataclass
 from django.conf import settings
 from data_utils import parse_ticketmaster_date
+from .event_class import EventResult  # reuse the shared dataclass
 
 logger = logging.getLogger(__name__)
 
-@dataclass
-class EventResult:
-    ''' Normalized event shape shared across services. '''
-    title: str
-    date: str
-    venue: str
-    location: str
-    source: str  # "serpapi" or "ticketmaster"
-    url: Optional[str] = None
-    description: Optional[str] = None
 
 class TicketmasterService:
     SOURCE = "ticketmaster"

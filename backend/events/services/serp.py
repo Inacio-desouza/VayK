@@ -1,24 +1,12 @@
 from datetime import date
 import logging
-from dataclasses import dataclass, field
 from typing import Optional
 from django.conf import settings
 from data_utils import parse_serpapi_date
 import serpapi
+from .event_class import EventResult  # reuse the shared dataclass
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class EventResult:
-    ''' Normalized event shape shared across services. '''
-    title: str
-    date: str
-    venue: str
-    location: str
-    source: str  # "serpapi" or "ticketmaster"
-    url: Optional[str] = None
-    description: Optional[str] = None
 
 ''' SerpApiService is responsible for fetching events from SerpAPI and normalizing them into our EventResult format '''
 class SerpApiService:
