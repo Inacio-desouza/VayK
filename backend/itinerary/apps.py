@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class DataAquisitionConfig(AppConfig):
+class ItineraryConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'data_aquisition'
+    name = 'itinerary'
