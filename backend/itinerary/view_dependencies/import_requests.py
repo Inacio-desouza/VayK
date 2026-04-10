@@ -3,6 +3,7 @@ import time
 import math
 import numpy as np
 from django.conf import settings
+from itinerary.models import City, Activity
 
 # =====================================
 # CONFIGURATION
@@ -226,6 +227,20 @@ def get_top_places(LAT, LNG):
     )
 
     return sorted_places
+
+def thread_top_places(city_object, lat, lng):
+    activities = get_top_places(lat, lng)
+    for activity in activities:
+                Activity.objects.create(
+                    city=city_object,
+                    name=activity["name"],
+                    icon=activity["icon"],
+                    rating=activity["rating"],
+                    num_reviews=activity["reviews"],
+                    score=activity["score"],
+                    address=activity["address"]
+                )
+    return
 
 
 # =====================================
