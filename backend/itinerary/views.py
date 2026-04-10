@@ -67,8 +67,9 @@ def get_itinerary(request):
         activities_thread.join()  # Wait for the activities thread to finish before generating the itinerary
         print("Finished getting from database and events")
 
+        print("Generating itinerary with Gemini")
         itinerary = generate_itinerary(itinerary_view.activities, itinerary_view.events, interests, preferences, arrival_date, departure_date)
-            
+        
 
         # Example response
         return JsonResponse({

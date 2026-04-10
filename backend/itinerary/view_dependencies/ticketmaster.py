@@ -26,7 +26,6 @@ class TicketmasterService:
         # Ticketmaster expects ISO 8601: "YYYY-MM-DDT00:00:00Z"
         try:
             date_str = f"{arrival_date}T00:00:00Z"
-            print(f"Date string in request for Ticketmaster: {date_str}")
         except ValueError:
             logger.error("Invalid arrival_date format: %s (expected MM-DD-YYYY)", arrival_date)
             return []
