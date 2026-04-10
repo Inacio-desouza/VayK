@@ -40,7 +40,7 @@ def get_itinerary(request):
         places_thread = None
         if created:
             print("Getting from google places")
-            places_thread = threading.Thread(target=thread_top_places, args=(lat, lon))
+            places_thread = threading.Thread(target=thread_top_places, args=(city_object, lat, lon))
             places_thread.start()
         
         print("Getting from events")
