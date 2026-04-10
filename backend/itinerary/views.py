@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .view_dependencies.gemini import generate_itinerary
-from .view_dependencies.import_requests import thread_top_places
+from .view_dependencies.places import thread_top_places
 from .models import City, Activity
 import threading
 import json
