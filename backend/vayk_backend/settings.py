@@ -45,8 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'itinerary',
-    'events'
+    'itinerary'
 ]
 
 MIDDLEWARE = [

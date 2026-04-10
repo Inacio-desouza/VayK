@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .view_dependencies.gemini import generate_itinerary
 from .view_dependencies.places import thread_top_places
+from .view_dependencies.ticketmaster import TicketmasterService
+from .view_dependencies.serp import SerpApiService
 from .models import City, Activity
 import threading
 import json
@@ -45,6 +47,13 @@ def get_itinerary(request):
         
         print("Getting from events")
         events_thread = None  # Placeholder for events data, can be populated similarly to activities
+        serpapi = SerpApiService()
+        ticketmaster = TicketmasterService()
+        serpapi_events = serpapi.fetch_events(destination, arrival_date)
+        print(f"SerpAPI returned {len(serpapi_events)} events")
+        ticketmaster_events = ticketmaster.fetch_events(destination, arrival_date, departure_date)
+        print(f"Ticketmaster returned {len(ticketmaster_events)} events")
+        itinerary_view.events = serpapi_events + ticketmaster_events  # Combine results from both sources
 
         if places_thread:
             places_thread.join()  # Wait for the places thread to finish before generating the itinerary
@@ -54,7 +63,7 @@ def get_itinerary(request):
         activities_thread = threading.Thread(target=thread_activities, args=(city_object, itinerary_view))
         activities_thread.start()
 
-        #join for the event thead here
+        #join for the event thread here
         activities_thread.join()  # Wait for the activities thread to finish before generating the itinerary
         print("Finished getting from database and events")
 

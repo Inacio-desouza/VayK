@@ -3,7 +3,7 @@ from typing import Optional
 import requests
 from dataclasses import dataclass
 from django.conf import settings
-from data_utils import parse_ticketmaster_date
+from .data_utils import parse_ticketmaster_date
 from .event_class import EventResult  # reuse the shared dataclass
 
 logger = logging.getLogger(__name__)
@@ -21,22 +21,32 @@ class TicketmasterService:
         self,
         destination: str,   # from user input
         arrival_date: str,  # "MM-DD-YYYY" arrival date from user input
+        departure_date: Optional[str] = None,  # not currently used in query but could be for future filtering
     ) -> list[EventResult]:
         # Ticketmaster expects ISO 8601: "YYYY-MM-DDT00:00:00Z"
         try:
-            month, day, year = arrival_date.split("-")
-            date_str = f"{year}-{month}-{day}T00:00:00Z"
+            date_str = f"{arrival_date}T00:00:00Z"
+            print(f"Date string in request for Ticketmaster: {date_str}")
         except ValueError:
             logger.error("Invalid arrival_date format: %s (expected MM-DD-YYYY)", arrival_date)
             return []
+        
+        try:           
+            if departure_date:
+                departure_str = f"{departure_date}T23:59:59Z"
+            else:
+                departure_str = None
+        except ValueError:
+            logger.error("Invalid departure_date format: %s (expected MM-DD-YYYY)", departure_date)
+            departure_str = None
 
         params = {
             "apikey": self.api_key,
             "keyword": destination,
             "city": destination,
             "startDateTime": date_str,
-            "endDateTime": date_str.replace("T00:00:00Z", "T23:59:59Z"),
-            "size": 20,  # max results per page; bump if needed
+            "endDateTime": departure_str,
+            "size": 30,  # max results per page; bump if needed
         }
 
         try:
@@ -45,10 +55,11 @@ class TicketmasterService:
             return self._normalize(response.json())
         except Exception as exc:
             logger.error("Ticketmaster fetch failed: %s", exc)
+            print(f"Ticketmaster API response: {response.text}")  # Basic print for debugging; can be removed or replaced with more sophisticated logging
             return []  # fail gracefully so aggregator can still merge
 
     ''' Method to convert Ticketmaster's raw response into our normalized EventResult format '''
-    def _normalize(self, raw_results: dict) -> list[EventResult]:
+    def _normalize(self, raw_results: dict) -> list[dict]:
         embedded = raw_results.get("_embedded", {})
         events = embedded.get("events", [])
         normalized = []
@@ -80,16 +91,14 @@ class TicketmasterService:
             else:
                 raw_date = start.get("dateTime", "")     # last resort: use UTC datetime
 
-
-            normalized.append(EventResult(
-                title=event.get("name", ""), 
-                date=raw_date,
-                start_dt=parse_ticketmaster_date(raw_date),
-                venue=venue_name,
-                location=location,
-                url=url,
-                description=event.get("info") or event.get("pleaseNote"),
-                source=self.SOURCE,
-            ))
+            normalized.append({
+                "title": event.get("name", ""),
+                "date": raw_date,
+                "venue": venue_name,
+                "location": location,
+                "source": self.SOURCE,
+                "url": url,
+                "description": event.get("info") or event.get("pleaseNote"),
+            })
 
         return normalized
