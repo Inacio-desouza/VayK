@@ -46,7 +46,7 @@ async function generateItinerary() {
 
     const { destination, arrivalDate, departureDate, interests, preferences } = tripStore.tripForm
 
-    const res = await fetch('http://localhost:8000/data_aquisition/itinerary/', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/data_aquisition/itinerary/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
