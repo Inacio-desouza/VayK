@@ -10,3 +10,4 @@ requests
 numpy
 google-genai
 serpapi
+gunicorn
