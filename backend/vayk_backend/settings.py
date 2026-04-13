@@ -29,12 +29,12 @@ TICKETMASTER_KEY = os.getenv("TICKETMASTER_KEY")
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-krelkk#ftu(i5)8qy$)&4h_t_keh@u8zdslm0*^cb$vozee40u'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-krelkk#ftu(i5)8qy$)&4h_t_keh@u8zdslm0*^cb$vozee40u")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -131,8 +131,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Vue dev server default port
-    "http://127.0.0.1:5173",
+    origin for origin in os.getenv(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",") if origin
 ]
 
 # REST Framework settings
