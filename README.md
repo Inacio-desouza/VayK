@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/vayk_frontend/src/assets/navy_logo.png" width="928" height="472" alt="VayK Logo" />
+  <img src="frontend/vayk_frontend/src/assets/navy_logo.png" width="420" alt="VayK Logo" />
 </p>
 
 VayK is a full-stack web application that generates personalized travel itineraries based on user input. Users provide a destination, travel dates, and preferences, and the system produces a curated itinerary by combining external API data with LLM generation.
