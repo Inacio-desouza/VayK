@@ -16,7 +16,7 @@ class ItineraryView:
         self.events = []
 
 def thread_activities(city_object, itinerary_view):
-    itinerary_view.activities = list(Activity.objects.filter(city=city_object).values())
+    itinerary_view.activities = list(Activity.objects.filter(city=city_object).order_by('-score').values()[:50])
     return
 
 @csrf_exempt
