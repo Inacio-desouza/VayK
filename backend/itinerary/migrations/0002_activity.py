@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('data_aquisition', '0001_initial'),
+        ('itinerary', '0001_initial'),
     ]
 
     operations = [
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('num_reviews', models.IntegerField()),
                 ('score', models.DecimalField(decimal_places=2, max_digits=5)),
                 ('address', models.CharField(max_length=255)),
-                ('city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='activities', to='data_aquisition.city')),
+                ('city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='activities', to='itinerary.city')),
             ],
         ),
     ]

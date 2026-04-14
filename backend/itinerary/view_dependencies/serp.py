@@ -2,7 +2,7 @@ from datetime import date
 import logging
 from typing import Optional
 from django.conf import settings
-from data_utils import parse_serpapi_date
+from .data_utils import parse_serpapi_date
 import serpapi
 from .event_class import EventResult  # reuse the shared dataclass
 
@@ -35,8 +35,8 @@ class SerpApiService:
             logger.error("SerpAPI fetch failed: %s", exc)
             return []          # fail gracefully so aggregator can still merge
 
-    ''' Method to convert SerpAPI's raw response into our normalized EventResult format '''
-    def _normalize(self, raw_results: dict) -> list[EventResult]:
+    ''' Method to convert SerpAPI's raw response into our normalized format '''
+    def _normalize(self, raw_results: dict) -> list[dict]:
         events = raw_results.get("events_results", [])
         normalized = []
         for event in events:
@@ -44,16 +44,16 @@ class SerpApiService:
             location = ", ".join(address_parts)  # "Night Club 101, 101 Avenue A, New York, NY"
 
             venue = event.get("venue", {})
-            raw_date = date.get("when") or date.get("start_date", "")
+            date_info = event.get("date", {})
+            raw_date = date_info.get("start_date", "") or date_info.get("when", "")
 
-            normalized.append(EventResult(
-                title=event.get("title", ""),
-                date=raw_date,
-                start_dt=parse_serpapi_date(raw_date),
-                venue=venue.get("name", ""),
-                location=location,
-                url=event.get("link"),
-                description=event.get("description"),
-                source=self.SOURCE
-            ))
+            normalized.append({
+                "title": event.get("title", ""),
+                "date": raw_date,
+                "venue": venue.get("name", ""),
+                "location": location,
+                "source": self.SOURCE,
+                "url": event.get("link"),
+                "description": event.get("description"),
+            })
         return normalized

@@ -17,7 +17,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR / ".env", override=True)
 
 PLACES_KEY = os.getenv("PLACES_KEY")
 GEMINI_KEY = os.getenv("GEMINI_KEY")
@@ -45,8 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'data_aquisition',
-    'events'
+    'itinerary'
 ]
 
 MIDDLEWARE = [

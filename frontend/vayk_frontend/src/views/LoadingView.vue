@@ -2,7 +2,12 @@
   <div class="loading-view">
     <div class="loading-card">
       <h1>Creating your itinerary...</h1>
-      <p>{{ loadingMessage }}</p>
+
+      <p class="loading-message">
+        <Transition name="fade-up" mode="out-in">
+          <span :key="loadingMessage">{{ loadingMessage }}</span>
+        </Transition>
+      </p>
 
       <div class="spinner"></div>
 
@@ -36,7 +41,7 @@ function rotateMessages() {
   messageInterval = setInterval(() => {
     index = (index + 1) % loadingMessages.length
     loadingMessage.value = loadingMessages[index]
-  }, 1800)
+  }, 3500)
 }
 
 async function generateItinerary() {
@@ -46,7 +51,7 @@ async function generateItinerary() {
 
     const { destination, arrivalDate, departureDate, interests, preferences } = tripStore.tripForm
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/data_aquisition/itinerary/`, {
+    const res = await fetch('http://localhost:8000/itinerary/get_itinerary/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -67,7 +72,6 @@ async function generateItinerary() {
     tripStore.setGenerating(false)
     router.push('/activities')
   } catch (error) {
-    // Backend not running — use mock data so the UI flow can still be tested
     console.warn('Backend unavailable, falling back to mock data:', error)
     tripStore.setGeneratedItinerary(mockPlaces)
     tripStore.setGenerating(false)
@@ -116,10 +120,15 @@ onUnmounted(() => {
   color: #172554;
 }
 
-.loading-card p {
+.loading-message {
   font-size: 1rem;
   color: #475569;
   margin-bottom: 1.5rem;
+  min-height: 1.5em;
+}
+
+.loading-message span {
+  display: inline-block;
 }
 
 .spinner {
@@ -135,6 +144,33 @@ onUnmounted(() => {
 .error-message {
   color: #b91c1c;
   font-weight: 600;
+}
+
+.fade-up-enter-active,
+.fade-up-leave-active {
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.fade-up-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.fade-up-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-up-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-up-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 
 @keyframes spin {

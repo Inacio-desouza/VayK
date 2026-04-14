@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('data_aquisition', '0002_activity'),
+        ('itinerary', '0002_activity'),
     ]
 
     operations = [
