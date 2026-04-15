@@ -208,14 +208,9 @@ function splitDateLabel(label) {
                   <button class="info-btn" @click="openDetail(activity)">
                     <span class="info-icon">
                       <svg viewBox="0 0 20 20" fill="none">
-                        <!-- circle -->
-                        <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6"/>
-
-                        <!-- vertical line -->
-                        <path d="M10 8.8V12.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-
-                        <!-- dot -->
-                        <circle cx="10" cy="6.6" r="0.9" fill="currentColor"/>
+                        <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6" />
+                        <path d="M10 8.8V12.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        <circle cx="10" cy="6.6" r="0.9" fill="currentColor" />
                       </svg>
                     </span>
                   </button>
@@ -283,64 +278,35 @@ function splitDateLabel(label) {
                         <h4 class="calendar-card-title">{{ titleFor(activity) }}</h4>
                       </div>
 
-                      <!-- REAL TIME -->
-                      <button
-                        v-if="activity.time"
-                        class="time-pill time-pill-filled visible"
-                        @click="editTime(activity)"
-                      >
-                        {{ activity.time }}
-                      </button>
+                      <div class="calendar-card-right">
+                        <button
+                          v-if="activity.time"
+                          class="time-pill time-pill-filled visible"
+                          @click="editTime(activity)"
+                        >
+                          {{ activity.time }}
+                        </button>
 
-                      <!-- ADD TIME -->
-                      <button
-                        v-else
-                        class="time-pill time-pill-ghost hover-only"
-                        @click="editTime(activity)"
-                      >
-                        Add time
-                      </button>
-                    </div>
+                        <button
+                          v-else
+                          class="time-pill time-pill-ghost hover-only"
+                          @click="editTime(activity)"
+                        >
+                          Add time
+                        </button>
 
-                    <p v-if="subtitleFor(activity)" class="calendar-subtitle">
-                      <span class="meta-icon" aria-hidden="true">
-                        <svg viewBox="0 0 20 20" fill="none">
-                          <path
-                            d="M10 17C10 17 15 12.4 15 8.5C15 5.46 12.76 3 10 3C7.24 3 5 5.46 5 8.5C5 12.4 10 17 10 17Z"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                          />
-                          <circle cx="10" cy="8.3" r="2.1" stroke="currentColor" stroke-width="1.8" />
-                        </svg>
-                      </span>
-                      <span class="subtitle-text">{{ subtitleFor(activity) }}</span>
-                    </p>
+                        <button class="info-btn" @click="openDetail(activity)">
+                          <span class="info-icon">
+                            <svg viewBox="0 0 20 20" fill="none">
+                              <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6" />
+                              <path d="M10 8.8V12.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                              <circle cx="10" cy="6.6" r="0.9" fill="currentColor" />
+                            </svg>
+                          </span>
+                        </button>
 
-                    <p v-if="activity.rating" class="calendar-meta">
-                      <span class="star">★</span>
-                      {{ activity.rating }}
-                      <span v-if="activity.reviewCount">
-                        ({{ activity.reviewCount.toLocaleString() }})
-                      </span>
-                    </p>
-
-                    <div class="activity-actions">
-                      <button class="info-btn" @click="openDetail(activity)">
-                        <span class="info-icon">
-                          <svg viewBox="0 0 20 20" fill="none">
-                            <!-- circle -->
-                            <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6"/>
-
-                            <!-- vertical line -->
-                            <path d="M10 8.8V12.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-
-                            <!-- dot -->
-                            <circle cx="10" cy="6.6" r="0.9" fill="currentColor"/>
-                          </svg>
-                        </span>
-                      </button>
-
-                      <button class="icon-btn remove" @click="removeFromDay(day.id, activity.id)">×</button>
+                        <button class="icon-btn remove" @click="removeFromDay(day.id, activity.id)">×</button>
+                      </div>
                     </div>
                   </div>
 
@@ -409,14 +375,9 @@ function splitDateLabel(label) {
             <button class="info-btn" @click="openDetail(activity)">
               <span class="info-icon">
                 <svg viewBox="0 0 20 20" fill="none">
-                  <!-- circle -->
-                  <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6"/>
-
-                  <!-- vertical line -->
-                  <path d="M10 8.8V12.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-
-                  <!-- dot -->
-                  <circle cx="10" cy="6.6" r="0.9" fill="currentColor"/>
+                  <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M10 8.8V12.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  <circle cx="10" cy="6.6" r="0.9" fill="currentColor" />
                 </svg>
               </span>
             </button>
@@ -458,33 +419,74 @@ function splitDateLabel(label) {
         </div>
 
         <div class="modal-body">
-          <div v-if="tripStore.selectedActivity.venue" class="modal-section">
-            <p class="modal-label">Venue</p>
-            <p>{{ tripStore.selectedActivity.venue }}</p>
-          </div>
+          <template v-if="tripStore.selectedActivity">
+            <div
+              v-if="tripStore.selectedActivity.address || tripStore.selectedActivity.location"
+              class="modal-section modal-row"
+            >
+              <div class="modal-row-icon">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 17C10 17 15 12.4 15 8.5C15 5.46 12.76 3 10 3C7.24 3 5 5.46 5 8.5C5 12.4 10 17 10 17Z"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                  />
+                  <circle cx="10" cy="8.3" r="2.1" stroke="currentColor" stroke-width="1.8" />
+                </svg>
+              </div>
 
-          <div
-            v-if="tripStore.selectedActivity.location || tripStore.selectedActivity.address"
-            class="modal-section"
-          >
-            <p class="modal-label">Location</p>
-            <p>{{ tripStore.selectedActivity.location || tripStore.selectedActivity.address }}</p>
-          </div>
+              <div class="modal-row-content">
+                <p class="modal-label">
+                  {{ tripStore.selectedActivity.address ? 'Address' : 'Location' }}
+                </p>
+                <p class="modal-value">
+                  {{ tripStore.selectedActivity.address || tripStore.selectedActivity.location }}
+                </p>
+              </div>
+            </div>
 
-          <div v-if="tripStore.selectedActivity.description" class="modal-section">
-            <p class="modal-label">Description</p>
-            <p>{{ tripStore.selectedActivity.description }}</p>
-          </div>
+            <div
+              v-if="tripStore.selectedActivity.rating"
+              class="modal-section modal-row"
+            >
+              <div class="modal-row-icon">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 2.8L12.22 7.3L17.2 8.02L13.6 11.54L14.45 16.5L10 14.16L5.55 16.5L6.4 11.54L2.8 8.02L7.78 7.3L10 2.8Z"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
 
-          <a
-            v-if="tripStore.selectedActivity.link"
-            :href="tripStore.selectedActivity.link"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="visit-link"
-          >
-            Visit website
-          </a>
+              <div class="modal-row-content">
+                <p class="modal-label">Rating</p>
+                <p class="modal-value">
+                  <span class="modal-rating-star">★</span>
+                  {{ tripStore.selectedActivity.rating }}
+                  <span v-if="tripStore.selectedActivity.reviewCount" class="modal-muted">
+                    ({{ tripStore.selectedActivity.reviewCount.toLocaleString() }} reviews)
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div v-if="tripStore.selectedActivity.description" class="modal-section">
+              <p class="modal-label">Description</p>
+              <p class="modal-description">{{ tripStore.selectedActivity.description }}</p>
+            </div>
+
+            <a
+              v-if="tripStore.selectedActivity.link"
+              :href="tripStore.selectedActivity.link"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="visit-link"
+            >
+              Visit website
+            </a>
+          </template>
         </div>
       </div>
     </div>
@@ -642,8 +644,7 @@ function splitDateLabel(label) {
 }
 
 .activity-card,
-.alternate-card,
-.calendar-activity-card {
+.alternate-card {
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 20px;
@@ -651,6 +652,13 @@ function splitDateLabel(label) {
   display: flex;
   justify-content: space-between;
   gap: 14px;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.04);
+}
+.calendar-activity-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 16px 18px;
   box-shadow: 0 1px 6px rgba(15, 23, 42, 0.04);
 }
 
@@ -693,13 +701,19 @@ function splitDateLabel(label) {
   min-width: 0;
 }
 
-.activity-top-row,
-.calendar-card-top {
+.activity-top-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
 }
+
+.calendar-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
 
 .activity-title,
 .calendar-card-title {
@@ -711,8 +725,7 @@ function splitDateLabel(label) {
   color: #0f172a;
 }
 
-.activity-subtitle,
-.calendar-subtitle {
+.activity-subtitle {
   margin: 6px 0 0;
   font-size: 14px;
   color: #667085;
@@ -740,8 +753,7 @@ function splitDateLabel(label) {
   flex-shrink: 0;
 }
 
-.activity-meta,
-.calendar-meta {
+.activity-meta {
   margin: 6px 0 0;
   font-size: 14px;
   color: #6b7280;
@@ -767,6 +779,7 @@ function splitDateLabel(label) {
   letter-spacing: -0.01em;
   flex-shrink: 0;
 }
+
 .time-pill-filled {
   background: #e7eefc;
   color: #2b3f75;
@@ -776,6 +789,7 @@ function splitDateLabel(label) {
 .time-pill-filled:hover {
   background: #dfe8fb;
 }
+
 .time-pill-ghost {
   background: #f3f4f6;
   color: #9ca3af;
@@ -786,6 +800,7 @@ function splitDateLabel(label) {
   background: #e5e7eb;
   color: #6b7280;
 }
+
 .visible {
   opacity: 1;
 }
@@ -801,8 +816,7 @@ function splitDateLabel(label) {
   pointer-events: auto;
 }
 
-.activity-actions,
-.calendar-actions {
+.activity-actions {
   display: flex;
   gap: 8px;
   align-items: flex-start;
@@ -829,28 +843,23 @@ function splitDateLabel(label) {
 .info-btn {
   width: 26px;
   height: 26px;
-  border-radius: 8px;                /* square w/ rounded corners */
+  border-radius: 8px;
   background: transparent;
   border: none;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
   padding: 0;
-
   transition: background 0.15s ease;
 }
 
 .info-icon {
   width: 16px;
   height: 16px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: #94a3b8;
 }
 
@@ -860,11 +869,10 @@ function splitDateLabel(label) {
 }
 
 .info-btn:hover {
-  background: #f3f4f6;  
+  background: #f3f4f6;
 }
 
 .info-btn:hover .info-icon {
-  border-color: #475569;
   color: #475569;
 }
 
@@ -918,16 +926,48 @@ function splitDateLabel(label) {
   min-height: 520px;
 }
 
+.calendar-activity-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.04);
+}
+
+.calendar-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+}
+
 .calendar-card-title-wrap {
   display: flex;
-  gap: 8px;
   align-items: flex-start;
+  gap: 10px;
   min-width: 0;
   flex: 1;
 }
+.calendar-card-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
 
 .calendar-card-title {
-  font-size: 16px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #0f172a;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .alternates-tab {
@@ -1037,9 +1077,9 @@ function splitDateLabel(label) {
 
 .modal-card {
   width: 100%;
-  max-width: 620px;
+  max-width: 760px;
   background: white;
-  border-radius: 24px;
+  border-radius: 28px;
   overflow: hidden;
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
 }
@@ -1049,40 +1089,89 @@ function splitDateLabel(label) {
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-  padding: 22px 24px 16px;
+  padding: 24px 28px 18px;
   border-bottom: 1px solid #e5e7eb;
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 26px;
   letter-spacing: -0.02em;
 }
 
 .modal-body {
-  padding: 20px 24px 24px;
+  padding: 28px;
 }
 
 .modal-section + .modal-section {
-  margin-top: 18px;
+  margin-top: 24px;
+}
+
+.modal-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.modal-row-icon {
+  width: 28px;
+  height: 28px;
+  color: #98a2b3;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.modal-row-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.modal-row-content {
+  flex: 1;
 }
 
 .modal-label {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   color: #6b7280;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal-value {
+  margin: 0;
+  color: #0f172a;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.modal-description {
+  margin: 0;
+  color: #334155;
+  font-size: 16px;
+  line-height: 1.65;
+  max-width: 52ch;
+}
+
+.modal-rating-star {
+  color: #eab308;
+  margin-right: 4px;
+}
+
+.modal-muted {
+  color: #6b7280;
 }
 
 .visit-link {
   display: inline-block;
-  margin-top: 22px;
-  background: #1e3a8a;
+  margin-top: 24px;
+  background: #27429b;
   color: white;
   text-decoration: none;
-  padding: 11px 16px;
-  border-radius: 12px;
+  padding: 13px 20px;
+  border-radius: 14px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .empty {
@@ -1136,8 +1225,7 @@ function splitDateLabel(label) {
     padding: 14px 15px;
   }
 
-  .activity-top-row,
-  .calendar-card-top {
+  .activity-top-row {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -1151,6 +1239,17 @@ function splitDateLabel(label) {
   .day-header {
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    border-radius: 22px;
+  }
+
+  .modal-header,
+  .modal-body {
+    padding-left: 18px;
+    padding-right: 18px;
   }
 }
 </style>
