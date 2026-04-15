@@ -1,11 +1,11 @@
 {
     "tripTitle": "Tokyo, Japan",
-    "tripDates": "June 3–16",
+    "tripDates": "June 3–10",
     "days": [
       {
         "id": "day-1",
         "dayNumber": 1,
-        "dateLabel": "June 3",
+        "dateLabel": "Tuesday, June 3",
         "activities": [
           {
             "id": "a1",
@@ -15,7 +15,6 @@
             "rating": 4.6,
             "reviewCount": 32845,
             "description": "Historic Buddhist temple in Asakusa.",
-            "link": "https://example.com",
             "time": "9:00 AM"
           },
           {
@@ -36,22 +35,203 @@
             "reviewCount": 24567,
             "description": "Popular market for food and local vendors.",
             "time": "12:30 PM"
+          },
+          {
+            "id": "a4",
+            "type": "place",
+            "name": "Tokyo Station",
+            "address": "1 Chome Marunouchi",
+            "rating": 4.4,
+            "reviewCount": 21456,
+            "time": "3:00 PM"
           }
         ]
       },
       {
         "id": "day-2",
         "dayNumber": 2,
-        "dateLabel": "June 4",
+        "dateLabel": "Wednesday, June 4",
         "activities": [
           {
-            "id": "a4",
+            "id": "a5",
             "type": "place",
             "name": "Meiji Shrine",
             "address": "1-1 Yoyogikamizonocho",
             "rating": 4.7,
             "reviewCount": 41238,
             "time": "8:30 AM"
+          },
+          {
+            "id": "a6",
+            "type": "place",
+            "name": "Harajuku Takeshita Street",
+            "address": "1 Chome-17 Jingumae",
+            "rating": 4.3,
+            "reviewCount": 18976
+          },
+          {
+            "id": "a7",
+            "type": "place",
+            "name": "Omotesando",
+            "address": "Jingumae",
+            "rating": 4.4,
+            "reviewCount": 16234,
+            "time": "12:00 PM"
+          }
+        ]
+      },
+      {
+        "id": "day-3",
+        "dayNumber": 3,
+        "dateLabel": "Thursday, June 5",
+        "activities": [
+          {
+            "id": "a8",
+            "type": "place",
+            "name": "Tokyo Skytree",
+            "address": "1 Chome-1-2 Oshiage",
+            "rating": 4.5,
+            "reviewCount": 52341,
+            "time": "10:00 AM"
+          },
+          {
+            "id": "a9",
+            "type": "place",
+            "name": "Solamachi Shopping Complex",
+            "address": "Tokyo Skytree Town",
+            "rating": 4.3,
+            "reviewCount": 9876
+          },
+          {
+            "id": "a10",
+            "type": "place",
+            "name": "Sumida Aquarium",
+            "address": "Tokyo Skytree Town",
+            "rating": 4.2,
+            "reviewCount": 7654,
+            "time": "1:00 PM"
+          }
+        ]
+      },
+      {
+        "id": "day-4",
+        "dayNumber": 4,
+        "dateLabel": "Friday, June 6",
+        "activities": [
+          {
+            "id": "a11",
+            "type": "place",
+            "name": "Shibuya Crossing",
+            "address": "Shibuya",
+            "rating": 4.5,
+            "reviewCount": 19823,
+            "time": "10:30 AM"
+          },
+          {
+            "id": "a12",
+            "type": "place",
+            "name": "Shibuya Sky",
+            "address": "2 Chome-24-12 Shibuya",
+            "rating": 4.6,
+            "reviewCount": 24248,
+            "time": "1:30 PM"
+          }
+        ]
+      },
+      {
+        "id": "day-5",
+        "dayNumber": 5,
+        "dateLabel": "Saturday, June 7",
+        "activities": [
+          {
+            "id": "a13",
+            "type": "place",
+            "name": "Yoyogi Park",
+            "address": "2-1 Yoyogikamizonocho",
+            "rating": 4.4,
+            "reviewCount": 26795
+          },
+          {
+            "id": "a14",
+            "type": "place",
+            "name": "Shinjuku Gyoen National Garden",
+            "address": "11 Naitomachi, Shinjuku City",
+            "rating": 4.6,
+            "reviewCount": 44273,
+            "time": "2:00 PM"
+          }
+        ]
+      },
+      {
+        "id": "day-6",
+        "dayNumber": 6,
+        "dateLabel": "Sunday, June 8",
+        "activities": [
+          {
+            "id": "a15",
+            "type": "place",
+            "name": "Ueno Park",
+            "address": "Uenokoen, Taito City",
+            "rating": 4.3,
+            "reviewCount": 31122,
+            "time": "9:30 AM"
+          },
+          {
+            "id": "a16",
+            "type": "place",
+            "name": "Tokyo National Museum",
+            "address": "13-9 Uenokoen",
+            "rating": 4.6,
+            "reviewCount": 22456,
+            "time": "12:30 PM"
+          }
+        ]
+      },
+      {
+        "id": "day-7",
+        "dayNumber": 7,
+        "dateLabel": "Monday, June 9",
+        "activities": [
+          {
+            "id": "a17",
+            "type": "place",
+            "name": "teamLab Planets",
+            "address": "6 Chome-1-16 Toyosu",
+            "rating": 4.7,
+            "reviewCount": 18765,
+            "time": "11:00 AM"
+          },
+          {
+            "id": "a18",
+            "type": "place",
+            "name": "Toyosu Market",
+            "address": "6 Chome-6-1 Toyosu",
+            "rating": 4.2,
+            "reviewCount": 9864
+          }
+        ]
+      },
+      {
+        "id": "day-8",
+        "dayNumber": 8,
+        "dateLabel": "Tuesday, June 10",
+        "activities": [
+          {
+            "id": "a19",
+            "type": "place",
+            "name": "Imperial Palace East Gardens",
+            "address": "1-1 Chiyoda",
+            "rating": 4.4,
+            "reviewCount": 14562,
+            "time": "10:00 AM"
+          },
+          {
+            "id": "a20",
+            "type": "place",
+            "name": "Ginza Shopping District",
+            "address": "Ginza",
+            "rating": 4.5,
+            "reviewCount": 19823
           }
         ]
       }
@@ -68,11 +248,41 @@
       },
       {
         "id": "alt-2",
+        "type": "event",
+        "title": "Senso-ji Temple Night Visit",
+        "venue": "Asakusa",
+        "rating": 4.7,
+        "reviewCount": 18234
+      },
+      {
+        "id": "alt-3",
         "type": "place",
         "name": "Nihonbashi Bridge",
-        "address": "Nihonbashi, Tokyo",
+        "address": "Nihonbashi",
         "rating": 4.3,
         "reviewCount": 4567
+      },
+      {
+        "id": "alt-4",
+        "type": "event",
+        "title": "Taiko Drumming Show",
+        "venue": "Asakusa Culture Center"
+      },
+      {
+        "id": "alt-5",
+        "type": "event",
+        "title": "Sumida River Cruise",
+        "venue": "Asakusa Pier",
+        "rating": 4.5,
+        "reviewCount": 8765
+      },
+      {
+        "id": "alt-6",
+        "type": "place",
+        "name": "Kappabashi Kitchen Supply Town",
+        "address": "Matsugaya, Taito City",
+        "rating": 4.3,
+        "reviewCount": 12158
       }
     ]
   }
