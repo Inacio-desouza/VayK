@@ -165,7 +165,7 @@ function splitDateLabel(label) {
 
                       <button
                         v-if="activity.time"
-                        class="time-btn visible"
+                        class="time-pill time-pill-filled visible"
                         @click="editTime(activity)"
                       >
                         {{ activity.time }}
@@ -173,7 +173,7 @@ function splitDateLabel(label) {
 
                       <button
                         v-else
-                        class="time-btn hover-only"
+                        class="time-pill time-pill-ghost hover-only"
                         @click="editTime(activity)"
                       >
                         Add time
@@ -283,17 +283,19 @@ function splitDateLabel(label) {
                         <h4 class="calendar-card-title">{{ titleFor(activity) }}</h4>
                       </div>
 
+                      <!-- REAL TIME -->
                       <button
                         v-if="activity.time"
-                        class="time-pill visible"
+                        class="time-pill time-pill-filled visible"
                         @click="editTime(activity)"
                       >
                         {{ activity.time }}
                       </button>
 
+                      <!-- ADD TIME -->
                       <button
                         v-else
-                        class="time-pill hover-only"
+                        class="time-pill time-pill-ghost hover-only"
                         @click="editTime(activity)"
                       >
                         Add time
@@ -752,27 +754,38 @@ function splitDateLabel(label) {
 .time-btn,
 .time-pill {
   border: none;
-  background: #edf3ff;
-  color: #22356f;
   padding: 7px 12px;
   border-radius: 11px;
-  font-weight: 600;
   font-size: 13px;
   line-height: 1;
   cursor: pointer;
   white-space: nowrap;
   transition:
     opacity 0.15s ease,
-    background 0.15s ease;
+    background 0.15s ease,
+    color 0.15s ease;
   letter-spacing: -0.01em;
   flex-shrink: 0;
 }
-
-.time-btn:hover,
-.time-pill:hover {
-  background: #e4edff;
+.time-pill-filled {
+  background: #e7eefc;
+  color: #2b3f75;
+  font-weight: 600;
 }
 
+.time-pill-filled:hover {
+  background: #dfe8fb;
+}
+.time-pill-ghost {
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.time-pill-ghost:hover {
+  background: #e5e7eb;
+  color: #6b7280;
+}
 .visible {
   opacity: 1;
 }
@@ -879,7 +892,7 @@ function splitDateLabel(label) {
 .calendar-row {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: calc((1360px - 72px) / 4);
+  grid-auto-columns: calc((1360px - 48px) / 3);
   gap: 24px;
   min-width: max-content;
 }
@@ -1080,7 +1093,7 @@ function splitDateLabel(label) {
 
 @media (max-width: 1100px) {
   .calendar-row {
-    grid-auto-columns: 320px;
+    grid-auto-columns: 360px;
   }
 }
 
@@ -1112,7 +1125,7 @@ function splitDateLabel(label) {
   }
 
   .calendar-row {
-    grid-auto-columns: 300px;
+    grid-auto-columns: 320px;
   }
 }
 
