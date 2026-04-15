@@ -147,4 +147,8 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
         config=config
     )
 
+    print(f"Gemini finish_reason: {response.candidates[0].finish_reason}")
+    print(f"Gemini response length: {len(response.text)}")
+    print(f"Gemini response preview: {response.text[:500]}")
+
     return json.loads(response.text)
