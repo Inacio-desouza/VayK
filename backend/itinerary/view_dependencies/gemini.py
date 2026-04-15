@@ -72,6 +72,7 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
         """,
 
         temperature=0.3,
+        max_output_tokens=8192,
         response_mime_type="application/json",
 
         response_schema={
