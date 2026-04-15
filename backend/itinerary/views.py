@@ -16,7 +16,7 @@ class ItineraryView:
         self.events = []
 
 def thread_activities(city_object, itinerary_view):
-    itinerary_view.activities = list(Activity.objects.filter(city=city_object).order_by('-score').values()[:50])
+    itinerary_view.activities = list(Activity.objects.filter(city=city_object).order_by('-score').values('name', 'address', 'description', 'rating', 'num_reviews', 'url')[:50])
     return
 
 @csrf_exempt
@@ -53,7 +53,7 @@ def get_itinerary(request):
         print(f"SerpAPI returned {len(serpapi_events)} events")
         ticketmaster_events = ticketmaster.fetch_events(destination, arrival_date, departure_date)
         print(f"Ticketmaster returned {len(ticketmaster_events)} events")
-        itinerary_view.events = serpapi_events + ticketmaster_events  # Combine results from both sources
+        itinerary_view.events = (serpapi_events + ticketmaster_events)[:20]
 
         if places_thread:
             places_thread.join()  # Wait for the places thread to finish before generating the itinerary
