@@ -1,0 +1,78 @@
+{
+    "tripTitle": "Tokyo, Japan",
+    "tripDates": "June 3–16",
+    "days": [
+      {
+        "id": "day-1",
+        "dayNumber": 1,
+        "dateLabel": "June 3",
+        "activities": [
+          {
+            "id": "a1",
+            "type": "place",
+            "name": "Senso-ji Temple",
+            "address": "2 Chome-3-1 Asakusa",
+            "rating": 4.6,
+            "reviewCount": 32845,
+            "description": "Historic Buddhist temple in Asakusa.",
+            "link": "https://example.com",
+            "time": "9:00 AM"
+          },
+          {
+            "id": "a2",
+            "type": "place",
+            "name": "Nakamise Shopping Street",
+            "address": "1 Chome-36-3 Asakusa",
+            "rating": 4.4,
+            "reviewCount": 15234,
+            "description": "Traditional shopping street near Senso-ji."
+          },
+          {
+            "id": "a3",
+            "type": "place",
+            "name": "Tsukiji Outer Market",
+            "address": "4 Chome-16-2 Tsukiji",
+            "rating": 4.5,
+            "reviewCount": 24567,
+            "description": "Popular market for food and local vendors.",
+            "time": "12:30 PM"
+          }
+        ]
+      },
+      {
+        "id": "day-2",
+        "dayNumber": 2,
+        "dateLabel": "June 4",
+        "activities": [
+          {
+            "id": "a4",
+            "type": "place",
+            "name": "Meiji Shrine",
+            "address": "1-1 Yoyogikamizonocho",
+            "rating": 4.7,
+            "reviewCount": 41238,
+            "time": "8:30 AM"
+          }
+        ]
+      }
+    ],
+    "alternates": [
+      {
+        "id": "alt-1",
+        "type": "event",
+        "title": "Sumo Tournament",
+        "venue": "Ryogoku Kokugikan",
+        "location": "Sumida City, Tokyo",
+        "description": "Watch traditional Japanese sumo wrestling matches.",
+        "link": "https://example.com"
+      },
+      {
+        "id": "alt-2",
+        "type": "place",
+        "name": "Nihonbashi Bridge",
+        "address": "Nihonbashi, Tokyo",
+        "rating": 4.3,
+        "reviewCount": 4567
+      }
+    ]
+  }
