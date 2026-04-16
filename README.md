@@ -117,4 +117,4 @@ Frontend runs at: http://localhost:5173/
 
 ---
 ## Documents
-- [Project proposal](Reports/Project%20Proposal.docx.pdf).
+- [Project proposal](Reports/Project%20Proposal.docx.pdf)

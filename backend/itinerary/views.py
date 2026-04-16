@@ -8,21 +8,32 @@ from .view_dependencies.serp import SerpApiService
 from .models import City, Activity
 import threading
 import json
+import time
 
 # Create your views here.
 class ItineraryView:
     def __init__(self):
-        self.activities = []
+        self.activities_short = []
+        self.activities_full = []
         self.events = []
 
 def thread_activities(city_object, itinerary_view):
-    itinerary_view.activities = list(Activity.objects.filter(city=city_object).order_by('-score').values('name', 'address', 'description', 'rating', 'num_reviews', 'url')[:50])
+    itinerary_view.activities_full = list(Activity.objects.filter(city=city_object).values())
+    for activity in itinerary_view.activities_full:
+        itinerary_view.activities_short.append({
+            "name": activity["name"],
+            "rating": activity["rating"],
+            "reviews": activity["num_reviews"],
+        })
     return
 
 @csrf_exempt
 def get_itinerary(request):
+    
     if request.method == "POST":
         data = json.loads(request.body)
+
+        start_time = time.perf_counter()
 
         lat = data.get("lat")
         lon = data.get("lon")
@@ -68,8 +79,11 @@ def get_itinerary(request):
         print("Finished getting from database and events")
 
         print("Generating itinerary with Gemini")
-        itinerary = generate_itinerary(itinerary_view.activities, itinerary_view.events, interests, preferences, arrival_date, departure_date)
+        itinerary = generate_itinerary(itinerary_view.activities_full, itinerary_view.activities_short, itinerary_view.events, interests, preferences, arrival_date, departure_date)
         
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+        print(f"Total time for itinerary generation: {elapsed_time:.2f} seconds")
 
         # Example response
         return JsonResponse({
