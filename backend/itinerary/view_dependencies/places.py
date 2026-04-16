@@ -15,8 +15,8 @@ API_KEY = settings.PLACES_KEY
 if not API_KEY:
     raise ValueError("API_KEY is not set")
 
-SEARCH_RADIUS_MILES = 15
-GRID_SIZE = 3
+SEARCH_RADIUS_MILES = 20
+GRID_SIZE = 2
 
 MIN_REVIEWS = 500
 
@@ -28,8 +28,7 @@ MILES_TO_METERS = 1609.34
 
 PLACE_TYPES = [
     ["tourist_attraction"],
-    ["bar", "restaurant"],
-    ["cultural_landmark"]
+    ["bar", "restaurant", "cultural_landmark"]
 ]
 
 # =====================================

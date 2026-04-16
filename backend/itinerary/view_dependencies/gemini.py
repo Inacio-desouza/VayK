@@ -3,77 +3,62 @@ from google.genai import types
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 import json
+import time
 
 API_KEY = settings.GEMINI_KEY
 if not API_KEY:
     raise ValueError("API_KEY is not set")
 
-# 1. Setup Client with your AI Studio API Key
-# Get your key at: https://aistudio.google.com/app/apikey
 client = genai.Client(api_key=API_KEY)
 
-def generate_itinerary(activities, events, interests, preferences, arrival, departure):
-    model_id = "gemini-2.5-flash"
+# Reconstruct the full objects from the indices
+def map_item(item, activities, events, is_itinerary):
+    source_list = activities if item['source'] == 'activity' else events
+    original = source_list[item['index']]
+    res = {}
+    if item['source'] == 'activity':
+        res["name"] = original.get('name')
+        res["date_time"] = original.get('date_time')
+        res["address"] = original.get('address')
+        res["description"] = original.get('description')
+        res["rating"] = original.get('rating')
+        res["reviews"] = original.get('reviews')
+        res["url"] = original.get('url')
+
+    else:
+        res["name"] = original.get('title')
+        res["date_time"] = original.get('date')
+        res["address"] = original.get('venue')
+        res["description"] = original.get('description')
+        res["rating"] = None  # Events may not have ratings
+        res["reviews"] = None  # Events may not have reviews
+        res["url"] = original.get('url')
+
+    if is_itinerary:
+        res["recommended_time"] = item['recommended_time']
+
+    return res
+
+def generate_itinerary(act_full, act_short, events, interests, preferences, arrival, departure):
+    model_id = 'gemini-3.1-flash-lite-preview'
+
+    start_time = time.perf_counter()
 
     config = types.GenerateContentConfig(
         system_instruction="""
-        You are a travel itinerary generator.
-
-        You will receive:
-        - arrival date/time
-        - departure date/time
-        - user interests
-        - user preferences
-        - a list of activities
-        - a list of events
-
-        Your task is to generate a travel itinerary within the arrival and departure range.
-
-        Rules:
-        1. ONLY use the activities and events provided. Do not invent new items.
-        2. The itinerary must occur between the arrival and departure times.
-        3. Events must be scheduled on their provided date/time.
-        4. Activities may be scheduled at any reasonable time within the date range.
-        5. Select items that best match the user's interests and preferences.
-        6. Do not duplicate the same event or activity.
-        7. Mix activities and events when possible to create a balanced itinerary.
-        8. The itinerary must be sorted chronologically by date_time.
-
-        Additionally generate an "alternates" list.
-
-        Alternates Rules:
-        1. Alternates must contain exactly 10 items.
-        2. Items in alternates MUST NOT appear in the itinerary.
-        3. Only use activities or events from the provided lists.
-        4. Choose items that best match the user's interests and preferences.
-        5. Do not assign a date_time for activities in alternates but time provided for events should be maintained.
-
-        Field rules:
-
-        For activities:
-        - name = activity name
-        - date_time = generated time within trip window for itinerary only. null if alternate
-        - address = activity address
-        - description = null
-        - rating = activity rating
-        - reviews = activity num_reviews
-        - url = null
-
-        For events:
-        - name = event title
-        - date_time = event date
-        - address = venue or location
-        - description = event description
-        - rating = null
-        - reviews = null
-        - url = event url
-
-        Return ONLY a JSON object. Do not include explanations or extra text.
+        You are a travel expert. You will receive two lists: 'activities' and 'events'.
+        Your goal is to select the best items based on their relevance to the user's interests and preferences.
+        
+        Prioritization Rules:
+        1. Prioritize local activities and unique local events.
+        2. Strictly avoid large national brand names or global chains.
+        
+        Output Rules:
+        - Itinerary: Return an array of objects. Each object must have an 'index' (the original position in the provided list), a 'source' ('activity' or 'event'), and a 'recommended_time'.
+        - Alternates: Return exactly 10 'index' and 'source' pairs for items not in the itinerary.
         """,
-
-        temperature=0.3,
+        temperature=0.1, # Lower temperature for stricter mapping accuracy
         response_mime_type="application/json",
-
         response_schema={
             "type": "OBJECT",
             "properties": {
@@ -82,26 +67,13 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
                     "items": {
                         "type": "OBJECT",
                         "properties": {
-                            "name": {"type": "STRING"},
-                            "date_time": {"type": "STRING"},
-                            "address": {"type": "STRING"},
-                            "description": {"type": "STRING", "nullable": True},
-                            "rating": {"type": "NUMBER", "nullable": True},
-                            "reviews": {"type": "NUMBER", "nullable": True},
-                            "url": {"type": "STRING", "nullable": True}
+                            "index": {"type": "INTEGER"},
+                            "source": {"type": "STRING", "enum": ["activity", "event"]},
+                            "recommended_time": {"type": "STRING"}
                         },
-                        "required": [
-                            "name",
-                            "date_time",
-                            "address",
-                            "description",
-                            "rating",
-                            "reviews",
-                            "url"
-                        ]
+                        "required": ["index", "source", "recommended_time"]
                     }
                 },
-
                 "alternates": {
                     "type": "ARRAY",
                     "minItems": 10,
@@ -109,21 +81,10 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
                     "items": {
                         "type": "OBJECT",
                         "properties": {
-                            "name": {"type": "STRING"},
-                            "address": {"type": "STRING"},
-                            "description": {"type": "STRING", "nullable": True},
-                            "rating": {"type": "NUMBER", "nullable": True},
-                            "reviews": {"type": "NUMBER", "nullable": True},
-                            "url": {"type": "STRING", "nullable": True}
+                            "index": {"type": "INTEGER"},
+                            "source": {"type": "STRING", "enum": ["activity", "event"]}
                         },
-                        "required": [
-                            "name",
-                            "address",
-                            "description",
-                            "rating",
-                            "reviews",
-                            "url"
-                        ]
+                        "required": ["index", "source"]
                     }
                 }
             },
@@ -136,7 +97,7 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
         "departure": departure,
         "interests": interests,
         "preferences": preferences,
-        "activities": activities,
+        "activities": act_short,
         "events": events
     }, cls=DjangoJSONEncoder)
 
@@ -146,4 +107,21 @@ def generate_itinerary(activities, events, interests, preferences, arrival, depa
         config=config
     )
 
-    return json.loads(response.text)
+    if response.candidates[0].finish_reason == 'MAX_TOKENS':
+    # Handle the error gracefully or retry with a higher limit
+        raise ValueError("The response was too long and was cut off.")
+    
+    raw_data = json.loads(response.text)
+
+    end_time = time.perf_counter()
+    
+    elapsed_time = end_time - start_time
+    print(f"Itinerary generated in {elapsed_time:.2f} seconds.")
+
+    final_itinerary = [map_item(i, act_full, events, True) for i in raw_data['itinerary']]
+    final_alternates = [map_item(i, act_full, events, False) for i in raw_data['alternates']]
+
+    return {
+        "itinerary": final_itinerary,
+        "alternates": final_alternates
+    }
