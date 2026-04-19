@@ -101,3 +101,10 @@ class TicketmasterService:
             })
 
         return normalized
+    
+    def ticketmaster_thread(self, itinerary_view, destination, arrival_date, departure_date):
+        tm_events = self.fetch_events(destination, arrival_date, departure_date)
+        itinerary_view.ev_cond.acquire()
+        itinerary_view.events.extend(tm_events)
+        itinerary_view.ev_cond.notify()  # Notify that events have been added
+        itinerary_view.ev_cond.release()
