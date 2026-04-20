@@ -36,6 +36,8 @@ def map_item(item, activities, events, is_itinerary):
 
     if is_itinerary:
         res["recommended_time"] = item['recommended_time']
+    else:
+        res["recommended_time"] = original.get('date')
 
     return res
 
