@@ -9,6 +9,7 @@ from .models import City, Activity
 import threading
 import json
 import time
+from threading import Condition
 
 # Create your views here.
 class ItineraryView:
@@ -16,6 +17,7 @@ class ItineraryView:
         self.activities_short = []
         self.activities_full = []
         self.events = []
+        self.ev_cond = Condition()
 
 def thread_activities(city_object, itinerary_view):
     itinerary_view.activities_full = list(Activity.objects.filter(city=city_object).values())
@@ -57,14 +59,12 @@ def get_itinerary(request):
             places_thread.start()
         
         print("Getting from events")
-        events_thread = None  # Placeholder for events data, can be populated similarly to activities
         serpapi = SerpApiService()
         ticketmaster = TicketmasterService()
-        serpapi_events = serpapi.fetch_events(destination, arrival_date)
-        print(f"SerpAPI returned {len(serpapi_events)} events")
-        ticketmaster_events = ticketmaster.fetch_events(destination, arrival_date, departure_date)
-        print(f"Ticketmaster returned {len(ticketmaster_events)} events")
-        itinerary_view.events = (serpapi_events + ticketmaster_events)[:20]
+        serp_thread = threading.Thread(target=serpapi.serp_thread, args=(itinerary_view, destination, arrival_date))
+        serp_thread.start()
+        ticketmaster_thread = threading.Thread(target=ticketmaster.ticketmaster_thread, args=(itinerary_view, destination, arrival_date, departure_date))
+        ticketmaster_thread.start()
 
         if places_thread:
             places_thread.join()  # Wait for the places thread to finish before generating the itinerary
@@ -75,6 +75,8 @@ def get_itinerary(request):
         activities_thread.start()
 
         #join for the event thread here
+        serp_thread.join()  # Wait for the SerpAPI thread to finish before generating the itinerary
+        ticketmaster_thread.join()  # Wait for the Ticketmaster thread to finish before generating the itinerary
         activities_thread.join()  # Wait for the activities thread to finish before generating the itinerary
         print("Finished getting from database and events")
 

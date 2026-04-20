@@ -57,3 +57,10 @@ class SerpApiService:
                 "description": event.get("description"),
             })
         return normalized
+    
+    def serp_thread(self, itinerary_view, destination, arrival_date):
+        serpapi_events = self.fetch_events(destination, arrival_date)
+        itinerary_view.ev_cond.acquire()
+        itinerary_view.events.extend(serpapi_events)
+        itinerary_view.ev_cond.notify()  # Notify that events have been added
+        itinerary_view.ev_cond.release()
