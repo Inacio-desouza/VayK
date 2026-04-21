@@ -264,10 +264,11 @@ function handleSubmit() {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 40px 20px;
+  padding-left: 20px;
+  padding-right: 20px;
   box-sizing: border-box;
   color: black;
-  background: var(--page-bg);
+  background: white;
 }
 
 .form-container {
@@ -277,9 +278,7 @@ function handleSubmit() {
   max-width: 980px;
   box-sizing: border-box;
   padding: 42px 40px 36px;
-  background: var(--surface);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
+  background: var(--surface);  
 }
 
 .logo-img {

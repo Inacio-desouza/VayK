@@ -1,0 +1,199 @@
+<script setup>
+import { tripStore } from '../../stores/tripStores'
+
+defineProps({
+  activity: {
+    type: Object,
+    required: true,
+  },
+})
+
+defineEmits(['open-detail', 'add-activity'])
+
+function titleFor(activity) {
+  return tripStore.getActivityTitle(activity)
+}
+
+function subtitleFor(activity) {
+  if (activity.address) return activity.address
+  if (activity.venue) return activity.venue
+  if (activity.location) return activity.location
+  return ''
+}
+</script>
+
+<template>
+  <div class="alternate-card">
+    <div class="activity-info">
+      <h3 class="activity-title">{{ titleFor(activity) }}</h3>
+
+      <p v-if="subtitleFor(activity)" class="activity-subtitle">
+        <span class="meta-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none">
+            <path
+              d="M10 17C10 17 15 12.4 15 8.5C15 5.46 12.76 3 10 3C7.24 3 5 5.46 5 8.5C5 12.4 10 17 10 17Z"
+              stroke="currentColor"
+              stroke-width="1.8"
+            />
+            <circle cx="10" cy="8.3" r="2.1" stroke="currentColor" stroke-width="1.8" />
+          </svg>
+        </span>
+        <span class="subtitle-text">{{ subtitleFor(activity) }}</span>
+      </p>
+
+      <p v-if="activity.rating" class="activity-meta">
+        <span class="star">★</span>
+        {{ activity.rating }}
+        <span v-if="activity.reviewCount">
+          ({{ activity.reviewCount.toLocaleString() }})
+        </span>
+      </p>
+    </div>
+
+    <div class="activity-actions">
+      <button class="info-btn" @click="$emit('open-detail')">
+        <span class="info-icon">
+          <svg viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6" />
+            <path d="M10 8.8V12.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            <circle cx="10" cy="6.6" r="0.9" fill="currentColor" />
+          </svg>
+        </span>
+      </button>
+
+      <button
+        class="icon-btn"
+        @click="$emit('add-activity')"
+      >
+        +
+      </button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.alternate-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 16px 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.04);
+}
+
+.activity-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+  color: #0f172a;
+}
+
+.activity-subtitle {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #667085;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.subtitle-text {
+  display: inline-block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta-icon {
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #667085;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.meta-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.activity-meta {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.star {
+  color: #eab308;
+}
+
+.activity-actions {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  color: #94a3b8;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.icon-btn:hover {
+  background: #f8fafc;
+}
+
+.info-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease;
+}
+
+.info-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+}
+
+.info-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.info-btn:hover {
+  background: #f3f4f6;
+}
+
+.info-btn:hover .info-icon {
+  color: #475569;
+}
+</style>
