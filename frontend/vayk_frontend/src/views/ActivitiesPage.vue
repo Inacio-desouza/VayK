@@ -34,10 +34,6 @@ function handleRemoveActivity(dayId, activityId) {
 function handleToggleAlternates() {
   tripStore.toggleAlternates()
 }
-
-function handleAddActivityFromAlternates(activity) {
-  tripStore.moveActivityToDay(tripStore.days[0]?.id, activity)
-}
 </script>
 
 <template>
@@ -67,7 +63,6 @@ function handleAddActivityFromAlternates(activity) {
     <AlternatesSidebar
       @toggle="handleToggleAlternates"
       @open-detail="handleOpenDetail"
-      @add-activity="handleAddActivityFromAlternates"
     />
 
     <ActivityDetailModal @close="handleCloseDetail" />

@@ -18,7 +18,16 @@ function parseTimeToMinutes(time) {
   return hours * 60 + minutes
 }
 
-function sortActivitiesForDay(activities) {
+function normalizeActivity(activity, dayId = null) {
+  return {
+    ...activity,
+    dayId,
+    time: activity.time || undefined,
+    locked: Boolean(activity.time),
+  }
+}
+
+function sortInitialActivities(activities) {
   const timed = activities
     .filter((activity) => activity.time)
     .sort((a, b) => {
@@ -29,16 +38,27 @@ function sortActivitiesForDay(activities) {
 
   const untimed = activities.filter((activity) => !activity.time)
 
-  return [
-    ...timed.map((activity) => ({
-      ...activity,
-      locked: true,
-    })),
-    ...untimed.map((activity) => ({
-      ...activity,
-      locked: false,
-    })),
-  ]
+  return [...timed, ...untimed]
+}
+
+function findTimedInsertIndex(activities, activityMinutes, fallbackIndex = 0) {
+  for (let i = 0; i < activities.length; i += 1) {
+    const current = activities[i]
+    if (!current.time) continue
+
+    const currentMinutes = parseTimeToMinutes(current.time)
+    if (currentMinutes !== null && currentMinutes > activityMinutes) {
+      return i
+    }
+  }
+
+  for (let i = activities.length - 1; i >= 0; i -= 1) {
+    if (activities[i].time) {
+      return i + 1
+    }
+  }
+
+  return fallbackIndex
 }
 
 export const tripStore = reactive({
@@ -94,12 +114,8 @@ export const tripStore = reactive({
 
     this.days = (payload.days || []).map((day) => ({
       ...day,
-      activities: sortActivitiesForDay(
-        (day.activities || []).map((activity) => ({
-          ...activity,
-          dayId: day.id,
-          locked: Boolean(activity.time),
-        }))
+      activities: sortInitialActivities(
+        (day.activities || []).map((activity) => normalizeActivity(activity, day.id))
       ),
     }))
 
@@ -123,58 +139,58 @@ export const tripStore = reactive({
     return this.days.find((day) => day.id === dayId)
   },
 
-  normalizeDay(dayId) {
+  handleDayActivitiesChange(dayId) {
     const day = this.getDay(dayId)
     if (!day) return
-    day.activities = sortActivitiesForDay([...day.activities])
+
+    day.activities = day.activities.map((activity) => ({
+      ...activity,
+      dayId,
+      locked: Boolean(activity.time),
+    }))
+  },
+
+  handleAlternatesChange() {
+    this.alternates = this.alternates.map((activity) => ({
+      ...activity,
+      dayId: null,
+      time: undefined,
+      locked: false,
+    }))
   },
 
   removeActivityFromCurrentLocation(activityId) {
     for (const day of this.days) {
       const index = day.activities.findIndex((activity) => activity.id === activityId)
       if (index !== -1) {
-        return day.activities.splice(index, 1)[0]
+        return {
+          activity: day.activities.splice(index, 1)[0],
+          from: 'day',
+          dayId: day.id,
+          index,
+        }
       }
     }
 
     const alternateIndex = this.alternates.findIndex((activity) => activity.id === activityId)
     if (alternateIndex !== -1) {
-      return this.alternates.splice(alternateIndex, 1)[0]
+      return {
+        activity: this.alternates.splice(alternateIndex, 1)[0],
+        from: 'alternates',
+        dayId: null,
+        index: alternateIndex,
+      }
     }
 
     return null
   },
 
-  moveActivityToDay(dayId, activity, insertIndex = null) {
-    const moved = this.removeActivityFromCurrentLocation(activity.id)
-    if (!moved) return
-
-    const day = this.getDay(dayId)
-    if (!day) return
-
-    const nextActivity = {
-      ...moved,
-      dayId,
-      locked: Boolean(moved.time),
-    }
-
-    if (nextActivity.time) {
-      day.activities.push(nextActivity)
-    } else if (typeof insertIndex === 'number') {
-      day.activities.splice(insertIndex, 0, nextActivity)
-    } else {
-      day.activities.push(nextActivity)
-    }
-
-    this.normalizeDay(dayId)
-  },
-
   moveActivityToAlternates(activityId) {
-    const moved = this.removeActivityFromCurrentLocation(activityId)
-    if (!moved) return
+    const result = this.removeActivityFromCurrentLocation(activityId)
+    if (!result) return
 
     this.alternates.unshift({
-      ...moved,
+      ...result.activity,
       dayId: null,
       time: undefined,
       locked: false,
@@ -199,13 +215,30 @@ export const tripStore = reactive({
   },
 
   updateActivityTime(activityId, time) {
-    for (const day of this.days) {
-      const activity = day.activities.find((item) => item.id === activityId)
-      if (!activity) continue
+    const normalizedTime = time || undefined
 
-      activity.time = time || undefined
-      activity.locked = Boolean(activity.time)
-      this.normalizeDay(day.id)
+    for (const day of this.days) {
+      const index = day.activities.findIndex((item) => item.id === activityId)
+      if (index === -1) continue
+
+      const [activity] = day.activities.splice(index, 1)
+
+      const updatedActivity = {
+        ...activity,
+        time: normalizedTime,
+        locked: Boolean(normalizedTime),
+        dayId: day.id,
+      }
+
+      if (!normalizedTime) {
+        day.activities.splice(index, 0, updatedActivity)
+        return
+      }
+
+      const updatedMinutes = parseTimeToMinutes(normalizedTime)
+      const insertIndex = findTimedInsertIndex(day.activities, updatedMinutes, index)
+
+      day.activities.splice(insertIndex, 0, updatedActivity)
       return
     }
   },

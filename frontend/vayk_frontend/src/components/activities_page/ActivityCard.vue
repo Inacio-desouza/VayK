@@ -40,7 +40,7 @@ function handleRemove() {
 </script>
 
 <template>
-  <div class="activity-card" :class="{ timed: !!activity.time }">
+  <div class="activity-card" :class="{ 'timed-card': !!activity.time }">
     <div class="activity-left">
       <div class="drag-indicator">
         <span v-if="activity.time" class="lock-icon" aria-hidden="true">
@@ -55,7 +55,7 @@ function handleRemove() {
           </svg>
         </span>
 
-        <span v-else class="grip-icon" aria-hidden="true">
+        <span v-else class="grip-icon drag-handle" aria-hidden="true">
           <svg viewBox="0 0 20 20" fill="currentColor">
             <circle cx="7" cy="5" r="1.2" />
             <circle cx="13" cy="5" r="1.2" />
@@ -140,7 +140,7 @@ function handleRemove() {
   box-shadow: 0 1px 6px rgba(15, 23, 42, 0.04);
 }
 
-.activity-card.timed {
+.activity-card.timed-card {
   border-left: 4px solid #d5dbe6;
 }
 
@@ -159,6 +159,14 @@ function handleRemove() {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.drag-handle {
+  cursor: grab;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
 }
 
 .lock-icon,
@@ -353,20 +361,5 @@ function handleRemove() {
 
 .info-btn:hover .info-icon {
   color: #475569;
-}
-
-@media (max-width: 640px) {
-  .activity-card {
-    padding: 14px 15px;
-  }
-
-  .activity-top-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .time-pill {
-    align-self: flex-start;
-  }
 }
 </style>

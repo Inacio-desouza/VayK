@@ -1,4 +1,5 @@
 <script setup>
+import draggable from 'vuedraggable'
 import { tripStore } from '../../stores/tripStores'
 import CalendarActivityCard from './CalendarActivityCard.vue'
 
@@ -20,6 +21,10 @@ function splitDateLabel(label) {
     date: label,
   }
 }
+
+function handleDayChange(dayId) {
+  tripStore.handleDayActivitiesChange(dayId)
+}
 </script>
 
 <template>
@@ -39,15 +44,28 @@ function splitDateLabel(label) {
           </div>
 
           <div class="calendar-day-body">
-            <CalendarActivityCard
-              v-for="activity in day.activities"
-              :key="activity.id"
-              :activity="activity"
-              :day-id="day.id"
-              @edit-time="emit('edit-time', activity.id, $event)"
-              @open-detail="emit('open-detail', activity)"
-              @remove="emit('remove-activity', day.id, activity.id)"
-            />
+            <draggable
+              v-model="day.activities"
+              item-key="id"
+              group="activities"
+              handle=".drag-handle"
+              ghost-class="drag-ghost"
+              chosen-class="drag-chosen"
+              drag-class="drag-dragging"
+              :animation="200"
+              class="calendar-dropzone"
+              @change="handleDayChange(day.id)"
+            >
+              <template #item="{ element }">
+                <CalendarActivityCard
+                  :activity="element"
+                  :day-id="day.id"
+                  @edit-time="emit('edit-time', element.id, $event)"
+                  @open-detail="emit('open-detail', element)"
+                  @remove="emit('remove-activity', day.id, element.id)"
+                />
+              </template>
+            </draggable>
 
             <p v-if="!day.activities.length" class="empty">
               No activities yet.
@@ -123,10 +141,27 @@ function splitDateLabel(label) {
 
 .calendar-day-body {
   padding: 16px;
+  min-height: 520px;
+}
+
+.calendar-dropzone {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 520px;
+  min-height: 24px;
+  border-radius: 18px;
+}
+
+:deep(.drag-ghost) {
+  opacity: 0.45;
+}
+
+:deep(.drag-chosen) {
+  transform: scale(0.995);
+}
+
+:deep(.drag-dragging) {
+  cursor: grabbing;
 }
 
 .empty {

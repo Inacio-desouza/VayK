@@ -8,7 +8,7 @@ defineProps({
   },
 })
 
-defineEmits(['open-detail', 'add-activity'])
+defineEmits(['open-detail'])
 
 function titleFor(activity) {
   return tripStore.getActivityTitle(activity)
@@ -24,30 +24,45 @@ function subtitleFor(activity) {
 
 <template>
   <div class="alternate-card">
-    <div class="activity-info">
-      <h3 class="activity-title">{{ titleFor(activity) }}</h3>
-
-      <p v-if="subtitleFor(activity)" class="activity-subtitle">
-        <span class="meta-icon" aria-hidden="true">
-          <svg viewBox="0 0 20 20" fill="none">
-            <path
-              d="M10 17C10 17 15 12.4 15 8.5C15 5.46 12.76 3 10 3C7.24 3 5 5.46 5 8.5C5 12.4 10 17 10 17Z"
-              stroke="currentColor"
-              stroke-width="1.8"
-            />
-            <circle cx="10" cy="8.3" r="2.1" stroke="currentColor" stroke-width="1.8" />
+    <div class="alternate-left">
+      <div class="drag-indicator" aria-hidden="true">
+        <span class="grip-icon drag-handle">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <circle cx="7" cy="5" r="1.2" />
+            <circle cx="13" cy="5" r="1.2" />
+            <circle cx="7" cy="10" r="1.2" />
+            <circle cx="13" cy="10" r="1.2" />
+            <circle cx="7" cy="15" r="1.2" />
+            <circle cx="13" cy="15" r="1.2" />
           </svg>
         </span>
-        <span class="subtitle-text">{{ subtitleFor(activity) }}</span>
-      </p>
+      </div>
 
-      <p v-if="activity.rating" class="activity-meta">
-        <span class="star">★</span>
-        {{ activity.rating }}
-        <span v-if="activity.reviewCount">
-          ({{ activity.reviewCount.toLocaleString() }})
-        </span>
-      </p>
+      <div class="activity-info">
+        <h3 class="activity-title">{{ titleFor(activity) }}</h3>
+
+        <p v-if="subtitleFor(activity)" class="activity-subtitle">
+          <span class="meta-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path
+                d="M10 17C10 17 15 12.4 15 8.5C15 5.46 12.76 3 10 3C7.24 3 5 5.46 5 8.5C5 12.4 10 17 10 17Z"
+                stroke="currentColor"
+                stroke-width="1.8"
+              />
+              <circle cx="10" cy="8.3" r="2.1" stroke="currentColor" stroke-width="1.8" />
+            </svg>
+          </span>
+          <span class="subtitle-text">{{ subtitleFor(activity) }}</span>
+        </p>
+
+        <p v-if="activity.rating" class="activity-meta">
+          <span class="star">★</span>
+          {{ activity.rating }}
+          <span v-if="activity.reviewCount">
+            ({{ activity.reviewCount.toLocaleString() }})
+          </span>
+        </p>
+      </div>
     </div>
 
     <div class="activity-actions">
@@ -59,13 +74,6 @@ function subtitleFor(activity) {
             <circle cx="10" cy="6.6" r="0.9" fill="currentColor" />
           </svg>
         </span>
-      </button>
-
-      <button
-        class="icon-btn"
-        @click="$emit('add-activity')"
-      >
-        +
       </button>
     </div>
   </div>
@@ -81,6 +89,47 @@ function subtitleFor(activity) {
   justify-content: space-between;
   gap: 14px;
   box-shadow: 0 1px 6px rgba(15, 23, 42, 0.04);
+}
+
+.alternate-left {
+  display: flex;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.drag-indicator {
+  color: #d1d5db;
+  flex-shrink: 0;
+  line-height: 1;
+  padding-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drag-handle {
+  cursor: grab;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.grip-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #d1d5db;
+  flex-shrink: 0;
+}
+
+.grip-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .activity-info {
@@ -145,20 +194,6 @@ function subtitleFor(activity) {
   display: flex;
   gap: 8px;
   align-items: flex-start;
-}
-
-.icon-btn {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 18px;
-  color: #94a3b8;
-  padding: 4px;
-  border-radius: 10px;
-}
-
-.icon-btn:hover {
-  background: #f8fafc;
 }
 
 .info-btn {

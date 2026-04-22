@@ -1,8 +1,13 @@
 <script setup>
+import draggable from 'vuedraggable'
 import { tripStore } from '../../stores/tripStores'
 import AlternatesCard from './AlternatesCard.vue'
 
-defineEmits(['toggle', 'open-detail', 'add-activity'])
+defineEmits(['toggle', 'open-detail'])
+
+function handleAlternatesChange() {
+  tripStore.handleAlternatesChange()
+}
 </script>
 
 <template>
@@ -16,13 +21,25 @@ defineEmits(['toggle', 'open-detail', 'add-activity'])
     </div>
 
     <div class="alternates-body">
-      <AlternatesCard
-        v-for="activity in tripStore.alternates"
-        :key="activity.id"
-        :activity="activity"
-        @open-detail="$emit('open-detail', activity)"
-        @add-activity="$emit('add-activity', activity)"
-      />
+      <draggable
+        v-model="tripStore.alternates"
+        item-key="id"
+        group="activities"
+        handle=".drag-handle"
+        ghost-class="drag-ghost"
+        chosen-class="drag-chosen"
+        drag-class="drag-dragging"
+        :animation="200"
+        class="alternates-dropzone"
+        @change="handleAlternatesChange"
+      >
+        <template #item="{ element }">
+          <AlternatesCard
+            :activity="element"
+            @open-detail="$emit('open-detail', element)"
+          />
+        </template>
+      </draggable>
 
       <p v-if="!tripStore.alternates.length" class="empty">
         All alternate activities have been added.
@@ -30,7 +47,7 @@ defineEmits(['toggle', 'open-detail', 'add-activity'])
     </div>
 
     <div class="alternates-footer">
-      Add from this panel first. Drag and drop can come after the layout is working.
+      Untimed activities can be dragged anywhere. Timed activities stay fixed, but editing their time will reposition them.
     </div>
   </aside>
 </template>
@@ -82,7 +99,13 @@ defineEmits(['toggle', 'open-detail', 'add-activity'])
   padding: 16px;
   display: flex;
   flex-direction: column;
+}
+
+.alternates-dropzone {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
+  min-height: 24px;
 }
 
 .alternates-footer {
@@ -105,6 +128,18 @@ defineEmits(['toggle', 'open-detail', 'add-activity'])
 
 .icon-btn:hover {
   background: #f8fafc;
+}
+
+:deep(.drag-ghost) {
+  opacity: 0.45;
+}
+
+:deep(.drag-chosen) {
+  transform: scale(0.995);
+}
+
+:deep(.drag-dragging) {
+  cursor: grabbing;
 }
 
 .empty {

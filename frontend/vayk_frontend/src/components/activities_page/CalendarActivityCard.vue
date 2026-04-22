@@ -33,11 +33,11 @@ function handleRemove() {
 </script>
 
 <template>
-  <div class="calendar-activity-card" :class="{ timed: !!activity.time }">
+  <div class="calendar-activity-card" :class="{ 'timed-card': !!activity.time }">
     <div class="calendar-card-top">
       <div class="calendar-card-title-wrap">
-        <span class="mini-lock">
-          <span v-if="activity.time" class="lock-icon" aria-hidden="true">
+        <span v-if="activity.time" class="mini-lock" aria-hidden="true">
+          <span class="lock-icon">
             <svg viewBox="0 0 20 20" fill="none">
               <rect x="4" y="9" width="12" height="8" rx="2.5" stroke="currentColor" stroke-width="1.8" />
               <path
@@ -48,8 +48,10 @@ function handleRemove() {
               />
             </svg>
           </span>
+        </span>
 
-          <span v-else class="grip-icon" aria-hidden="true">
+        <span v-else class="mini-lock drag-handle" aria-hidden="true">
+          <span class="grip-icon">
             <svg viewBox="0 0 20 20" fill="currentColor">
               <circle cx="7" cy="5" r="1.2" />
               <circle cx="13" cy="5" r="1.2" />
@@ -106,7 +108,7 @@ function handleRemove() {
   box-shadow: 0 1px 6px rgba(15, 23, 42, 0.04);
 }
 
-.calendar-activity-card.timed {
+.calendar-activity-card.timed-card {
   border-left: 4px solid #d5dbe6;
 }
 
@@ -133,6 +135,14 @@ function handleRemove() {
   align-items: center;
   justify-content: center;
   padding-top: 2px;
+}
+
+.drag-handle {
+  cursor: grab;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
 }
 
 .lock-icon,
