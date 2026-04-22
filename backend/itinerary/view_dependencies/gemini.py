@@ -94,6 +94,11 @@ def generate_itinerary(act_full, act_short, events, interests, preferences, arri
         You are a travel expert. You will receive two lists: 'activities' and 'events'.
         Your goal is to select the best items based on their relevance to the user's interests and preferences.
         
+        Scheduling Rules:
+        1. Itinerary Density: Provide exactly 2 to 3 items for every full day of the trip.
+        2. Proximity Logic: Group items scheduled on the same day by geographic proximity. Look at the 'address' fields to ensure activities for a single day are in the same neighborhood or within a reasonable transit distance.
+        3. Logical Flow: Order items within a day chronologically (e.g., Morning, Afternoon, Evening).
+        
         Prioritization Rules:
         1. Prioritize local activities and unique local events.
         2. Strictly avoid large national brand names or global chains.
@@ -102,7 +107,7 @@ def generate_itinerary(act_full, act_short, events, interests, preferences, arri
         - Itinerary: Return an array of objects. Each object must have an 'index' (the original position in the provided list), a 'source' ('activity' or 'event'), and a 'recommended_time'.
         - Alternates: Return exactly 10 'index' and 'source' pairs for items not in the itinerary.
         """,
-        temperature=0.1, # Lower temperature for stricter mapping accuracy
+        temperature=0.1,
         response_mime_type="application/json",
         response_schema={
             "type": "OBJECT",
@@ -114,7 +119,7 @@ def generate_itinerary(act_full, act_short, events, interests, preferences, arri
                         "properties": {
                             "index": {"type": "INTEGER"},
                             "source": {"type": "STRING", "enum": ["activity", "event"]},
-                            "recommended_time": {"type": "STRING"}
+                            "recommended_time": {"type": "STRING", "description": "Format: YYYY-MM-DD HH:MM AM/PM"}
                         },
                         "required": ["index", "source", "recommended_time"]
                     }

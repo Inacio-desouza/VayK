@@ -347,7 +347,7 @@ def get_top_places(LAT, LNG):
 
 
 #fix database attributes
-def thread_top_places(city_object, lat, lng):
+def thread_top_places(itinerary_view, city_object, lat, lng):
     """
     Fetch top places and save them as Activity objects in the database.
 
@@ -355,6 +355,8 @@ def thread_top_places(city_object, lat, lng):
     Activity records associated with the provided city object.
 
     Args:
+        itinerary_view (ItineraryView): The ItineraryView instance to populate
+            with activities_short and activities_full.
         city_object: A City model instance to associate with the activities.
         lat (float): The latitude of the search center.
         lng (float): The longitude of the search center.
@@ -379,6 +381,21 @@ def thread_top_places(city_object, lat, lng):
                     url=activity["url"],
                     date_time=activity["date_time"]
                 )
+                itinerary_view.activities_full.append({
+                    "name": activity["name"],
+                    "rating": activity["rating"],
+                    "reviews": activity["reviews"],
+                    "address": activity["address"],
+                    "description": activity["description"],
+                    "url": activity["url"],
+                    "date_time": activity["date_time"]
+                })
+                itinerary_view.activities_short.append({
+                    "name": activity["name"],
+                    "rating": activity["rating"],
+                    "reviews": activity["reviews"],
+                    "address": activity["address"]
+                })
     elapsed = time.perf_counter() - start
     print(f"Places thread completed in {elapsed:.2f} seconds")
     return

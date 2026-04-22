@@ -50,6 +50,7 @@ def thread_activities(city_object, itinerary_view):
             "name": activity["name"],
             "rating": activity["rating"],
             "reviews": activity["num_reviews"],
+            "address": activity["address"]
         })
     elapsed = time.perf_counter() - start
     print(f"Activities thread completed in {elapsed:.2f} seconds")
@@ -106,9 +107,10 @@ def get_itinerary(request):
                                                     }
                                                 )
         places_thread = None
+        activities_thread = None
         if created:
             print("Getting from google places")
-            places_thread = threading.Thread(target=thread_top_places, args=(city_object, lat, lon))
+            places_thread = threading.Thread(target=thread_top_places, args=(itinerary_view, city_object, lat, lon))
             places_thread.start()
         
         print("Getting from events")
@@ -123,14 +125,16 @@ def get_itinerary(request):
             places_thread.join()  # Wait for the places thread to finish before generating the itinerary
             print("Finished getting from google places")
         
-        print("Getting from database")
-        activities_thread = threading.Thread(target=thread_activities, args=(city_object, itinerary_view))
-        activities_thread.start()
+        else:
+            print("Getting from database")
+            activities_thread = threading.Thread(target=thread_activities, args=(city_object, itinerary_view))
+            activities_thread.start()
 
         #join for the event thread here
         serp_thread.join()  # Wait for the SerpAPI thread to finish before generating the itinerary
         ticketmaster_thread.join()  # Wait for the Ticketmaster thread to finish before generating the itinerary
-        activities_thread.join()  # Wait for the activities thread to finish before generating the itinerary
+        if activities_thread:
+            activities_thread.join()  # Wait for the activities thread to finish before generating the itinerary
         print("Finished getting from database and events")
 
         print("Generating itinerary with Gemini")
