@@ -30,6 +30,9 @@ function handleAlternatesChange() {
         chosen-class="drag-chosen"
         drag-class="drag-dragging"
         :animation="200"
+        :force-fallback="true"
+        :fallback-on-body="true"
+        fallback-class="drag-fallback"
         class="alternates-dropzone"
         @start="document.body.classList.add('dragging-alternate')"
         @end="document.body.classList.remove('dragging-alternate')"
@@ -164,5 +167,11 @@ function handleAlternatesChange() {
 <style>
 body.dragging-alternate .alternates-sidebar {
   pointer-events: none;
+}
+
+.drag-fallback {
+  opacity: 0.85;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
+  z-index: 9999;
 }
 </style>
