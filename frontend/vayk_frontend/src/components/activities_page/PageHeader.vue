@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { tripStore } from '../../stores/tripStores'
+import { downloadICS } from '../../utils/exportICS'
 
 const router = useRouter()
 
@@ -53,6 +54,17 @@ function goHome() {
             <span>Calendar</span>
           </button>
         </div>
+
+        <button class="export-btn" @click="downloadICS">
+          <span class="export-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M10 3V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M6 10L10 14L14 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M3 16H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </span>
+          Export to Calendar
+        </button>
 
         <button class="back-btn" @click="goHome">← Plan another trip</button>
       </div>
@@ -134,6 +146,42 @@ function goHome() {
 }
 
 .toggle-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.export-btn {
+  border: 1px solid #e5e7eb;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.export-btn:hover {
+  background: #f8fafc;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+}
+
+.export-icon {
+  width: 17px;
+  height: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.export-icon svg {
   width: 100%;
   height: 100%;
   display: block;
