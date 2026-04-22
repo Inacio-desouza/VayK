@@ -13,6 +13,15 @@ from threading import Condition
 
 # Create your views here.
 class ItineraryView:
+    """
+    A container class for holding itinerary data during async processing.
+
+    Attributes:
+        activities_short (list[dict]): Shortened activity objects for AI prompts.
+        activities_full (list[dict]): Full activity objects with all fields.
+        events (list[dict]): Event objects fetched from external APIs.
+        ev_cond (Condition): Threading condition for event synchronization.
+    """
     def __init__(self):
         self.activities_short = []
         self.activities_full = []
@@ -20,6 +29,20 @@ class ItineraryView:
         self.ev_cond = Condition()
 
 def thread_activities(city_object, itinerary_view):
+    """
+    Populate the ItineraryView with activities from the database.
+
+    Runs in a separate thread to fetch activities for a given city and
+    build both full and short representations.
+
+    Args:
+        city_object: A City model instance to filter activities.
+        itinerary_view (ItineraryView): The ItineraryView instance to populate
+            with activities_short and activities_full.
+
+    Returns:
+        None: This function modifies `itinerary_view` in place.
+    """
     itinerary_view.activities_full = list(Activity.objects.filter(city=city_object).values())
     for activity in itinerary_view.activities_full:
         itinerary_view.activities_short.append({
@@ -31,6 +54,33 @@ def thread_activities(city_object, itinerary_view):
 
 @csrf_exempt
 def get_itinerary(request):
+    """
+    Generate a travel itinerary based on user input.
+
+    Accepts a POST request with destination, dates, interests, and preferences.
+    Orchestrates parallel fetching from Google Places, SerpAPI, and Ticketmaster,
+    then uses Gemini AI to generate an itinerary and alternates.
+
+    Args:
+        request (HttpRequest): The Django HTTP request object. Must be a POST
+            with JSON body containing: lat, lon, destination, arrivalDate,
+            departureDate, interests, and preferences.
+
+    Returns:
+        JsonResponse: A JSON response with "itinerary" and "alternates" keys.
+            Returns an error response with status 400 if not a POST request.
+
+    Expected POST body:
+        {
+            "lat": float,
+            "lon": float,
+            "destination": str,
+            "arrivalDate": str,
+            "departureDate": str,
+            "interests": list[str],
+            "preferences": str
+        }
+    """
     
     if request.method == "POST":
         data = json.loads(request.body)

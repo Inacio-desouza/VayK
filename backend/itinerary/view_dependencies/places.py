@@ -27,8 +27,8 @@ URL = "https://places.googleapis.com/v1/places:searchNearby"
 MILES_TO_METERS = 1609.34
 
 PLACE_TYPES = [
-    ["tourist_attraction"],
-    ["bar", "restaurant", "cultural_landmark"]
+    ["tourist_attraction", "cultural_landmark", "wildlife_park"],
+    ["bar", "restaurant", "night_club"]
 ]
 
 # =====================================
@@ -36,6 +36,16 @@ PLACE_TYPES = [
 # =====================================
 
 def compute_score(rating, reviews):
+    """
+    Compute a relevance score for a place based on its rating and number of reviews.
+
+    Args:
+        rating (float): The place's rating (e.g., 4.5).
+        reviews (int): The number of reviews for the place.
+
+    Returns:
+        float: The computed score. Returns 0 if rating or reviews is 0.
+    """
 
     if rating == 0 or reviews == 0:
         return 0
@@ -48,6 +58,15 @@ def compute_score(rating, reviews):
 # =====================================
 
 def compute_cell_radius():
+    """
+    Calculate the radius for each grid cell in meters.
+
+    The radius is based on the search radius and grid size, ensuring
+    cells cover the entire search area without overlap.
+
+    Returns:
+        int: The radius in meters for each grid cell.
+    """
 
     spacing = (2 * SEARCH_RADIUS_MILES) / (GRID_SIZE - 1)
 
@@ -57,6 +76,20 @@ def compute_cell_radius():
 
 
 def build_grid(CENTER_LAT, CENTER_LNG):
+    """
+    Build a grid of coordinate points around a center location.
+
+    Creates a grid of lat/lng points within the search radius, sorted
+    by distance from the center (closest first).
+
+    Args:
+        CENTER_LAT (float): The latitude of the center point.
+        CENTER_LNG (float): The longitude of the center point.
+
+    Returns:
+        list[tuple[float, float]]: A list of (latitude, longitude) tuples
+            sorted by distance from the center.
+    """
 
     miles_per_degree = 69
 
@@ -97,6 +130,18 @@ def build_grid(CENTER_LAT, CENTER_LNG):
 
 
 def make_request_with_retry(url, body, headers, max_retries=5):
+    """
+    Make an HTTP POST request with exponential backoff retry logic.
+
+    Args:
+        url (str): The URL to send the POST request to.
+        body (dict): The JSON body for the request.
+        headers (dict): The HTTP headers for the request.
+        max_retries (int, optional): Maximum number of retry attempts. Defaults to 5.
+
+    Returns:
+        dict or None: The JSON response data if successful, or None if all retries fail.
+    """
     for attempt in range(max_retries):
         try:
             response = requests.post(url, json=body, headers=headers)
@@ -121,6 +166,22 @@ def make_request_with_retry(url, body, headers, max_retries=5):
 # =====================================
 
 def fetch_places(lat, lng, radius):
+    """
+    Fetch places from Google Places API for a given location and radius.
+
+    Queries the Google Places API for tourist attractions, cultural landmarks,
+    wildlife parks, bars, restaurants, and night clubs within the specified radius.
+
+    Args:
+        lat (float): The latitude of the search center.
+        lng (float): The longitude of the search center.
+        radius (int): The search radius in meters.
+
+    Returns:
+        list[dict]: A list of place dictionaries with details including ID,
+            display name, address, rating, reviews, types, and editorial summary.
+            Returns an empty list if the request fails.
+    """
     places = []
 
     headers = {
@@ -177,6 +238,20 @@ def fetch_places(lat, lng, radius):
 # =====================================
 
 def collect_places(LAT, LNG):
+    """
+    Collect and filter places from Google Places API across a grid of locations.
+
+    Builds a grid around the center coordinates, fetches places from each cell,
+    applies score-based filtering, and deduplicates results.
+
+    Args:
+        LAT (float): The latitude of the search center.
+        LNG (float): The longitude of the search center.
+
+    Returns:
+        list[dict]: A list of place dictionaries containing name, hours,
+            address, description, rating, reviews, URL, score, latitude, and longitude.
+    """
 
     all_places = {}
 
@@ -244,6 +319,19 @@ def collect_places(LAT, LNG):
 # =====================================
 
 def get_top_places(LAT, LNG):
+    """
+    Get the top-rated places for a given location, sorted by score.
+
+    Collects all places within the search radius and returns them sorted
+    by relevance score in descending order.
+
+    Args:
+        LAT (float): The latitude of the search center.
+        LNG (float): The longitude of the search center.
+
+    Returns:
+        list[dict]: A list of place dictionaries sorted by score (highest first).
+    """
 
     places = collect_places(LAT, LNG)
 
@@ -260,6 +348,21 @@ def get_top_places(LAT, LNG):
 
 #fix database attributes
 def thread_top_places(city_object, lat, lng):
+    """
+    Fetch top places and save them as Activity objects in the database.
+
+    Retrieves the top places for the given coordinates and creates
+    Activity records associated with the provided city object.
+
+    Args:
+        city_object: A City model instance to associate with the activities.
+        lat (float): The latitude of the search center.
+        lng (float): The longitude of the search center.
+
+    Returns:
+        None: This function does not return a value. Activities are
+            persisted to the database via the Activity model.
+    """
     activities = get_top_places(lat, lng)
     for activity in activities:
                 Activity.objects.create(

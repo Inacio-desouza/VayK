@@ -13,6 +13,26 @@ client = genai.Client(api_key=API_KEY)
 
 # Reconstruct the full objects from the indices
 def map_item(item, activities, events, is_itinerary):
+    """
+    Reconstruct a full activity/event object from a compact reference.
+
+    Converts a lightweight reference (containing 'source' and 'index') into
+    a full object with all available fields. Differentiates between activities
+    and events since they have different field names.
+
+    Args:
+        item (dict): A dictionary containing 'source' ('activity' or 'event')
+            and 'index' (position in the source list). If `is_itinerary` is True,
+            also contains 'recommended_time'.
+        activities (list[dict]): Full list of activity objects.
+        events (list[dict]): Full list of event objects.
+        is_itinerary (bool): If True, uses 'recommended_time' from the item;
+            if False, returns None for 'recommended_time'.
+
+    Returns:
+        dict: A reconstructed object with keys: name, date_time, address,
+            description, rating, reviews, url, and recommended_time.
+    """
     source_list = activities if item['source'] == 'activity' else events
     original = source_list[item['index']]
     res = {}
@@ -37,11 +57,34 @@ def map_item(item, activities, events, is_itinerary):
     if is_itinerary:
         res["recommended_time"] = item['recommended_time']
     else:
-        res["recommended_time"] = original.get('date')
+        res["recommended_time"] = None
 
     return res
 
 def generate_itinerary(act_full, act_short, events, interests, preferences, arrival, departure):
+    """
+    Generate a travel itinerary using Gemini AI based on user preferences.
+
+    Sends activities and events to Gemini with user interests and date range.
+    Returns a structured itinerary and alternate recommendations.
+
+    Args:
+        act_full (list[dict]): Full activity objects with all fields.
+        act_short (list[dict]): Shortened activity objects for the prompt.
+        events (list[dict]): List of event objects.
+        interests (list[str]): User's travel interests (e.g., ['food', 'art']).
+        preferences (str): User's preferences as a string description.
+        arrival (str): Arrival date string (e.g., '2024-06-01').
+        departure (str): Departure date string (e.g., '2024-06-07').
+
+    Returns:
+        dict: A dictionary with two keys:
+            - "itinerary" (list[dict]): Selected activities/events with recommended times.
+            - "alternates" (list[dict]): 10 alternative recommendations without times.
+
+    Raises:
+        ValueError: If the response exceeds max tokens.
+    """
     model_id = 'gemini-3.1-flash-lite-preview'
 
     start_time = time.perf_counter()
