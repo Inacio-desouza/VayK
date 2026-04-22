@@ -15,7 +15,7 @@ defineEmits(['toggle'])
   </button>
 
   <div
-    v-if="tripStore.isAlternatesOpen"
+    v-if="tripStore.isAlternatesOpen && !tripStore.isDraggingAlternate"
     class="sidebar-backdrop"
     @click="$emit('toggle')"
   />

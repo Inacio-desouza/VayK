@@ -81,6 +81,7 @@ export const tripStore = reactive({
   activeView: 'list',
   selectedActivity: null,
   isAlternatesOpen: false,
+  isDraggingAlternate: false,
 
   setTripForm(formData) {
     this.tripForm = {

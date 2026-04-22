@@ -6,16 +6,20 @@ import AlternatesCard from './AlternatesCard.vue'
 defineEmits(['toggle', 'open-detail'])
 
 function onDragStart() {
-  tripStore.isAlternatesOpen = false
+  tripStore.isDraggingAlternate = true
 }
 
 function onDragEnd() {
-  tripStore.isAlternatesOpen = true
+  tripStore.isDraggingAlternate = false
 }
 </script>
 
 <template>
-  <aside class="alternates-sidebar" :class="{ open: tripStore.isAlternatesOpen }">
+  <aside
+    class="alternates-sidebar"
+    :class="{ open: tripStore.isAlternatesOpen }"
+    :style="tripStore.isDraggingAlternate ? { pointerEvents: 'none' } : {}"
+  >
     <div class="alternates-header">
       <div>
         <h2>Alternate Activities</h2>
@@ -169,5 +173,6 @@ function onDragEnd() {
   opacity: 0.85;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
   z-index: 9999;
+  pointer-events: none;
 }
 </style>
