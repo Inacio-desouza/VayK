@@ -165,7 +165,8 @@ function handleAlternatesChange() {
 </style>
 
 <style>
-body.dragging-alternate .alternates-sidebar {
+body.dragging-alternate .alternates-sidebar,
+body.dragging-alternate .sidebar-backdrop {
   pointer-events: none;
 }
 
