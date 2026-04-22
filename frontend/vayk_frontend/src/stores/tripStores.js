@@ -1,5 +1,34 @@
 import { reactive } from 'vue'
 
+function getOrdinal(day) {
+  if (day >= 11 && day <= 13) return `${day}th`
+
+  const lastDigit = day % 10
+  if (lastDigit === 1) return `${day}st`
+  if (lastDigit === 2) return `${day}nd`
+  if (lastDigit === 3) return `${day}rd`
+  return `${day}th`
+}
+
+function formatSingleDate(dateString) {
+  if (!dateString) return ''
+
+  const date = new Date(`${dateString}T12:00:00`)
+  if (Number.isNaN(date.getTime())) return dateString
+
+  const weekday = date.toLocaleDateString('en-US', { weekday: 'short' })
+  const month = date.toLocaleDateString('en-US', { month: 'long' })
+  const day = getOrdinal(date.getDate())
+
+  return `${weekday}, ${month} ${day}`
+}
+
+function formatTripDateRange(startDate, endDate) {
+  if (!startDate || !endDate) return ''
+
+  return `${formatSingleDate(startDate)} - ${formatSingleDate(endDate)}`
+}
+
 function parseTimeToMinutes(time) {
   if (!time) return null
 
@@ -111,7 +140,10 @@ export const tripStore = reactive({
       this.tripForm.destination?.displayName ||
       'Your Itinerary'
 
-    this.tripDates = payload.tripDates || ''
+      this.tripDates =
+      formatTripDateRange(this.tripForm.arrivalDate, this.tripForm.departureDate) ||
+      payload.tripDates ||
+      ''
 
     this.days = (payload.days || []).map((day) => ({
       ...day,

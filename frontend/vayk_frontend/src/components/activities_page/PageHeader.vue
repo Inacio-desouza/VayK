@@ -13,11 +13,18 @@ function goHome() {
 <template>
   <header class="header">
     <div class="header-inner">
-      <div>
+      <!-- LEFT -->
+      <div class="header-left">
         <h1 class="title">{{ tripStore.tripTitle }}</h1>
         <p class="date-range">{{ tripStore.tripDates }}</p>
+
+        <button class="back-btn" @click="goHome">
+          <span class="back-arrow" aria-hidden="true">←</span>
+          <span>Plan another trip</span>
+        </button>
       </div>
 
+      <!-- RIGHT -->
       <div class="header-right">
         <div class="view-toggle">
           <button
@@ -65,8 +72,6 @@ function goHome() {
           </span>
           Export to Calendar
         </button>
-
-        <button class="back-btn" @click="goHome">← Plan another trip</button>
       </div>
     </div>
   </header>
@@ -87,6 +92,12 @@ function goHome() {
   align-items: flex-start;
 }
 
+.header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .title {
   margin: 0;
   font-size: 34px;
@@ -99,6 +110,52 @@ function goHome() {
   margin: 8px 0 0;
   font-size: 16px;
   color: #6b7280;
+}
+
+/* SHARED BUTTON STYLE */
+.export-btn,
+.back-btn {
+  margin-top: 14px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  transition: background 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+
+.export-btn:hover,
+.back-btn:hover {
+  background: #f8fafc;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+  color: #1f2937;
+}
+
+.export-icon {
+  width: 17px;
+  height: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.export-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.back-arrow {
+  font-size: 16px;
+  line-height: 1;
 }
 
 .header-right {
@@ -151,50 +208,6 @@ function goHome() {
   display: block;
 }
 
-.export-btn {
-  border: 1px solid #e5e7eb;
-  background: white;
-  padding: 10px 16px;
-  border-radius: 14px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  color: #334155;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
-  transition: background 0.15s ease, box-shadow 0.15s ease;
-}
-
-.export-btn:hover {
-  background: #f8fafc;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
-}
-
-.export-icon {
-  width: 17px;
-  height: 17px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.export-icon svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.back-btn {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 14px;
-  color: #475569;
-}
-
 @media (max-width: 900px) {
   .header-inner {
     flex-direction: column;
@@ -218,6 +231,15 @@ function goHome() {
 @media (max-width: 640px) {
   .header {
     padding: 22px 16px 18px;
+  }
+
+  .view-toggle {
+    width: 100%;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    justify-content: center;
   }
 }
 </style>
