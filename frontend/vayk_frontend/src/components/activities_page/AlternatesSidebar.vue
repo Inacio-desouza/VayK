@@ -5,8 +5,12 @@ import AlternatesCard from './AlternatesCard.vue'
 
 defineEmits(['toggle', 'open-detail'])
 
-function handleAlternatesChange() {
-  tripStore.handleAlternatesChange()
+function onDragStart() {
+  tripStore.isAlternatesOpen = false
+}
+
+function onDragEnd() {
+  tripStore.isAlternatesOpen = true
 }
 </script>
 
@@ -34,8 +38,8 @@ function handleAlternatesChange() {
         :fallback-on-body="true"
         fallback-class="drag-fallback"
         class="alternates-dropzone"
-        @start="document.body.classList.add('dragging-alternate')"
-        @end="document.body.classList.remove('dragging-alternate')"
+        @start="onDragStart"
+        @end="onDragEnd"
         @remove="tripStore.handleAlternatesChange()"
       >
         <template #item="{ element }">
@@ -72,10 +76,6 @@ function handleAlternatesChange() {
   z-index: 50;
   display: flex;
   flex-direction: column;
-}
-
-.alternates-sidebar.drag-in-progress {
-  pointer-events: none;
 }
 
 .alternates-sidebar.open {
@@ -165,11 +165,6 @@ function handleAlternatesChange() {
 </style>
 
 <style>
-body.dragging-alternate .alternates-sidebar,
-body.dragging-alternate .sidebar-backdrop {
-  pointer-events: none;
-}
-
 .drag-fallback {
   opacity: 0.85;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
