@@ -22,7 +22,7 @@ class SerpApiService:
         # event_type: str,    we could add this if we want to tighten scope here or can just let LLM handle it
         arrival_date: str,          # "MM-DD-YYYY" arrival date from user input
         engine: str = "google_events", # SerpAPI's event search parameter for the request
-    ) -> list[EventResult]:         # A list of objects defined by the dataclass above!!
+    ) -> list[EventResult]:         # A list of objects defined by the dataclass above!!!
         
         query = f"Events in {destination} on {arrival_date}"  # We can adjust this format if needed
         try:
@@ -57,3 +57,21 @@ class SerpApiService:
                 "description": event.get("description"),
             })
         return normalized
+    
+    def serp_thread(self, itinerary_view, destination, arrival_date):
+        """
+        Fetch events and add them to the ItineraryView in a thread-safe manner.
+
+        Args:
+            itinerary_view (ItineraryView): The ItineraryView instance to populate with events.
+            destination (str): The city or location to search for events.
+            arrival_date (str): Arrival date in "MM-DD-YYYY" format.
+
+        Returns:
+            None: This function modifies `itinerary_view.events` in place.
+        """
+        serpapi_events = self.fetch_events(destination, arrival_date)
+        itinerary_view.ev_cond.acquire()
+        itinerary_view.events.extend(serpapi_events)
+        itinerary_view.ev_cond.notify()  # Notify that events have been added
+        itinerary_view.ev_cond.release()

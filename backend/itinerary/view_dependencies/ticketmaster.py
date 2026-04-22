@@ -101,3 +101,22 @@ class TicketmasterService:
             })
 
         return normalized
+    
+    def ticketmaster_thread(self, itinerary_view, destination, arrival_date, departure_date):
+        """
+        Fetch events and add them to the ItineraryView in a thread-safe manner.
+
+        Args:
+            itinerary_view (ItineraryView): The ItineraryView instance to populate with events.
+            destination (str): The city or location to search for events.
+            arrival_date (str): Arrival date in "MM-DD-YYYY" format.
+            departure_date (str): Departure date in "MM-DD-YYYY" format.
+
+        Returns:
+            None: This function modifies `itinerary_view.events` in place.
+        """
+        tm_events = self.fetch_events(destination, arrival_date, departure_date)
+        itinerary_view.ev_cond.acquire()
+        itinerary_view.events.extend(tm_events)
+        itinerary_view.ev_cond.notify()  # Notify that events have been added
+        itinerary_view.ev_cond.release()
