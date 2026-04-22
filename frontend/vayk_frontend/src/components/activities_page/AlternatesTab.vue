@@ -1,4 +1,4 @@
-<script setup>
+git commit<script setup>
 import { tripStore } from '../../stores/tripStores'
 
 defineEmits(['toggle'])
