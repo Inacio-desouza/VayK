@@ -1,5 +1,6 @@
 from datetime import date
 import logging
+import time
 from typing import Optional
 from django.conf import settings
 from .data_utils import parse_serpapi_date
@@ -70,8 +71,11 @@ class SerpApiService:
         Returns:
             None: This function modifies `itinerary_view.events` in place.
         """
+        start = time.perf_counter()
         serpapi_events = self.fetch_events(destination, arrival_date)
         itinerary_view.ev_cond.acquire()
         itinerary_view.events.extend(serpapi_events)
         itinerary_view.ev_cond.notify()  # Notify that events have been added
         itinerary_view.ev_cond.release()
+        elapsed = time.perf_counter() - start
+        print(f"SerpAPI thread completed in {elapsed:.2f} seconds")

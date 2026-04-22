@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 import requests
+import time
 from dataclasses import dataclass
 from django.conf import settings
 from .data_utils import parse_ticketmaster_date
@@ -115,8 +116,11 @@ class TicketmasterService:
         Returns:
             None: This function modifies `itinerary_view.events` in place.
         """
+        start = time.perf_counter()
         tm_events = self.fetch_events(destination, arrival_date, departure_date)
         itinerary_view.ev_cond.acquire()
         itinerary_view.events.extend(tm_events)
         itinerary_view.ev_cond.notify()  # Notify that events have been added
         itinerary_view.ev_cond.release()
+        elapsed = time.perf_counter() - start
+        print(f"Ticketmaster thread completed in {elapsed:.2f} seconds")
