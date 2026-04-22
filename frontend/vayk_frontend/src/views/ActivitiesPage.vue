@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { tripStore } from '../stores/tripStores'
-import itineraryMock from '../mock/itineraryMock.json'
 import PageHeader from '../components/activities_page/PageHeader.vue'
 import ListView from '../components/activities_page/ListView.vue'
 import CalendarView from '../components/activities_page/CalendarView.vue'
@@ -9,9 +9,15 @@ import AlternatesTab from '../components/activities_page/AlternatesTab.vue'
 import AlternatesSidebar from '../components/activities_page/AlternatesSidebar.vue'
 import ActivityDetailModal from '../components/activities_page/ActivityDetailModal.vue'
 
+const router = useRouter()
+
 onMounted(() => {
   if (!tripStore.days.length) {
-    tripStore.initializeItineraryState(itineraryMock)
+    if (tripStore.generatedItinerary) {
+      tripStore.initializeItineraryState(tripStore.generatedItinerary)
+    } else {
+      router.push('/')
+    }
   }
 })
 

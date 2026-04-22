@@ -44,6 +44,142 @@ function rotateMessages() {
   }, 3500)
 }
 
+function buildDateLabel(dateString, dayNumber) {
+  if (!dateString) return `Day ${dayNumber}`
+
+  const date = new Date(`${dateString}T00:00:00`)
+  if (Number.isNaN(date.getTime())) return `Day ${dayNumber}`
+
+  return date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+function formatHourMinute(hour, minute = 0) {
+  if (typeof hour !== 'number') return ''
+
+  const normalizedMinute = typeof minute === 'number' ? minute : 0
+  const suffix = hour >= 12 ? 'PM' : 'AM'
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12
+  const minuteText = String(normalizedMinute).padStart(2, '0')
+
+  return `${hour12}:${minuteText} ${suffix}`
+}
+
+function formatBackendTime(dateTime) {
+  if (!dateTime) return undefined
+
+  if (typeof dateTime === 'string') {
+    const looksLikeDate = /^[A-Za-z]{3,}\s\d{1,2}$/.test(dateTime)
+
+    if (looksLikeDate) return undefined
+
+    return dateTime
+  }
+
+  if (Array.isArray(dateTime)) {
+    if (dateTime.length === 0) return undefined
+
+    const firstValue = dateTime[0]
+
+    if (typeof firstValue === 'string') {
+      // If it's just a date like "Apr 23", ignore it
+      const looksLikeDate = /^[A-Za-z]{3,}\s\d{1,2}$/.test(firstValue)
+
+      if (looksLikeDate) return undefined
+
+      return firstValue
+    }
+
+    if (firstValue?.open || firstValue?.close) {
+      const openText = firstValue.open
+        ? formatHourMinute(firstValue.open.hour, firstValue.open.minute)
+        : ''
+      const closeText = firstValue.close
+        ? formatHourMinute(firstValue.close.hour, firstValue.close.minute)
+        : ''
+
+      if (openText && closeText) return `${openText} - ${closeText}`
+      return openText || closeText || undefined
+    }
+
+    return undefined
+  }
+
+  if (dateTime.open || dateTime.close) {
+    const openText = dateTime.open
+      ? formatHourMinute(dateTime.open.hour, dateTime.open.minute)
+      : ''
+    const closeText = dateTime.close
+      ? formatHourMinute(dateTime.close.hour, dateTime.close.minute)
+      : ''
+
+    if (openText && closeText) return `${openText} - ${closeText}`
+    return openText || closeText || undefined
+  }
+
+  return undefined
+}
+
+function formatActivity(activity, index, prefix = 'act') {
+  return {
+    id: `${prefix}-${index}`,
+    title: activity.name,
+    name: activity.name,
+    time: formatBackendTime(activity.date_time),
+    address: activity.address,
+    description: activity.description,
+    rating: activity.rating,
+  }
+}
+
+function buildFormattedItinerary(places) {
+  const { destination, arrivalDate, departureDate } = tripStore.tripForm
+
+  const startDate = new Date(`${arrivalDate}T00:00:00`)
+  const endDate = new Date(`${departureDate}T00:00:00`)
+
+  const tripLength =
+    !Number.isNaN(startDate.getTime()) && !Number.isNaN(endDate.getTime())
+      ? Math.max(
+          1,
+          Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1
+        )
+      : Math.max(1, (places.itinerary || []).length)
+
+  const dayBuckets = Array.from({ length: tripLength }, (_, index) => {
+    const currentDate = new Date(startDate)
+    currentDate.setDate(startDate.getDate() + index)
+
+    const isoDate = !Number.isNaN(currentDate.getTime())
+      ? currentDate.toISOString().split('T')[0]
+      : null
+
+    return {
+      id: `day-${index + 1}`,
+      dayNumber: index + 1,
+      dateLabel: buildDateLabel(isoDate, index + 1),
+      activities: [],
+    }
+  })
+
+  ;(places.itinerary || []).forEach((activity, index) => {
+    const dayIndex = index % dayBuckets.length
+    dayBuckets[dayIndex].activities.push(formatActivity(activity, index, 'act'))
+  })
+
+  return {
+    tripTitle: destination?.displayName || 'Your Itinerary',
+    tripDates: `${arrivalDate} - ${departureDate}`,
+    days: dayBuckets,
+    alternates: (places.alternates || []).map((activity, index) =>
+      formatActivity(activity, index, 'alt')
+    ),
+  }
+}
+
 async function generateItinerary() {
   try {
     tripStore.setGenerating(true)
@@ -51,29 +187,52 @@ async function generateItinerary() {
 
     const { destination, arrivalDate, departureDate, interests, preferences } = tripStore.tripForm
 
+    const requestBody = {
+      lat: destination.lat,
+      lon: destination.lon,
+      destination: destination.displayName,
+      arrivalDate,
+      departureDate,
+      interests,
+      preferences,
+    }
+
+    console.log('TRIP FORM FROM STORE:', JSON.parse(JSON.stringify(tripStore.tripForm)))
+    console.log('REQUEST BODY SENT TO BACKEND:', requestBody)
+
     const res = await fetch(`${import.meta.env.VITE_API_URL}/itinerary/get_itinerary/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        lat: destination.lat,
-        lon: destination.lon,
-        destination: destination.displayName,
-        arrivalDate,
-        departureDate,
-        interests,
-        preferences,
-      }),
+      body: JSON.stringify(requestBody),
     })
+
+    console.log('RESPONSE STATUS:', res.status)
 
     if (!res.ok) throw new Error('Server error')
 
     const places = await res.json()
-    tripStore.setGeneratedItinerary(places)
+
+    console.log('RAW BACKEND RESPONSE:', places)
+    console.log('FIRST ITINERARY ITEM:', places.itinerary?.[0])
+    console.log('BACKEND RESPONSE itinerary:', places.itinerary)
+    console.log('BACKEND RESPONSE alternates:', places.alternates)
+
+    const formattedItinerary = buildFormattedItinerary(places)
+
+    console.log('FORMATTED ITINERARY:', formattedItinerary)
+
+    tripStore.setGeneratedItinerary(formattedItinerary)
+    tripStore.initializeItineraryState(formattedItinerary)
+
+    console.log('STORE DAYS AFTER INIT:', JSON.parse(JSON.stringify(tripStore.days)))
+    console.log('STORE ALTERNATES AFTER INIT:', JSON.parse(JSON.stringify(tripStore.alternates)))
+
     tripStore.setGenerating(false)
     router.push('/activities')
   } catch (error) {
     console.warn('Backend unavailable, falling back to mock data:', error)
     tripStore.setGeneratedItinerary(mockPlaces)
+    tripStore.initializeItineraryState(mockPlaces)
     tripStore.setGenerating(false)
     router.push('/activities')
   }
