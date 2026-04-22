@@ -31,7 +31,9 @@ function handleAlternatesChange() {
         drag-class="drag-dragging"
         :animation="200"
         class="alternates-dropzone"
-        @change="tripStore.handleAlternatesChange()"
+        @start="document.body.classList.add('dragging-alternate')"
+        @end="document.body.classList.remove('dragging-alternate')"
+        @remove="tripStore.handleAlternatesChange()"
       >
         <template #item="{ element }">
           <AlternatesCard
@@ -67,6 +69,10 @@ function handleAlternatesChange() {
   z-index: 50;
   display: flex;
   flex-direction: column;
+}
+
+.alternates-sidebar.drag-in-progress {
+  pointer-events: none;
 }
 
 .alternates-sidebar.open {
@@ -152,5 +158,11 @@ function handleAlternatesChange() {
   .alternates-sidebar {
     width: min(100%, 360px);
   }
+}
+</style>
+
+<style>
+body.dragging-alternate .alternates-sidebar {
+  pointer-events: none;
 }
 </style>

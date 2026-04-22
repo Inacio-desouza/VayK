@@ -25,8 +25,8 @@ function subtitleFor(activity) {
 <template>
   <div class="alternate-card">
     <div class="alternate-left">
-      <div class="drag-indicator" aria-hidden="true">
-        <span class="grip-icon drag-handle">
+      <div class="drag-indicator drag-handle" aria-hidden="true">
+        <span class="grip-icon">
           <svg viewBox="0 0 20 20" fill="currentColor">
             <circle cx="7" cy="5" r="1.2" />
             <circle cx="13" cy="5" r="1.2" />
