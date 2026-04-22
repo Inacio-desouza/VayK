@@ -38,8 +38,6 @@ function onDragEnd() {
         chosen-class="drag-chosen"
         drag-class="drag-dragging"
         :animation="200"
-        :force-fallback="true"
-        :fallback-on-body="true"
         fallback-class="drag-fallback"
         class="alternates-dropzone"
         @start="onDragStart"
