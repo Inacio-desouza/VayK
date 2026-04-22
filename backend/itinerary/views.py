@@ -43,6 +43,7 @@ def thread_activities(city_object, itinerary_view):
     Returns:
         None: This function modifies `itinerary_view` in place.
     """
+    start = time.perf_counter()
     itinerary_view.activities_full = list(Activity.objects.filter(city=city_object).values())
     for activity in itinerary_view.activities_full:
         itinerary_view.activities_short.append({
@@ -50,6 +51,8 @@ def thread_activities(city_object, itinerary_view):
             "rating": activity["rating"],
             "reviews": activity["num_reviews"],
         })
+    elapsed = time.perf_counter() - start
+    print(f"Activities thread completed in {elapsed:.2f} seconds")
     return
 
 @csrf_exempt

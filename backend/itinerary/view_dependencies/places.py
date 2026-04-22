@@ -363,6 +363,7 @@ def thread_top_places(city_object, lat, lng):
         None: This function does not return a value. Activities are
             persisted to the database via the Activity model.
     """
+    start = time.perf_counter()
     activities = get_top_places(lat, lng)
     for activity in activities:
                 Activity.objects.create(
@@ -378,6 +379,8 @@ def thread_top_places(city_object, lat, lng):
                     url=activity["url"],
                     date_time=activity["date_time"]
                 )
+    elapsed = time.perf_counter() - start
+    print(f"Places thread completed in {elapsed:.2f} seconds")
     return
 
 
