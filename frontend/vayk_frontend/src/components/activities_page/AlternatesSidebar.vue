@@ -24,14 +24,14 @@ function handleAlternatesChange() {
       <draggable
         v-model="tripStore.alternates"
         item-key="id"
-        group="activities"
+        :group="{ name: 'activities', pull: true, put: true }"
         handle=".drag-handle"
         ghost-class="drag-ghost"
         chosen-class="drag-chosen"
         drag-class="drag-dragging"
         :animation="200"
         class="alternates-dropzone"
-        @change="handleAlternatesChange"
+        @change="tripStore.handleAlternatesChange()"
       >
         <template #item="{ element }">
           <AlternatesCard

@@ -46,14 +46,14 @@ function handleDayChange(dayId) {
       <draggable
         v-model="day.activities"
         item-key="id"
-        group="activities"
+        :group="{ name: 'activities', pull: true, put: true }"
         handle=".drag-handle"
         ghost-class="drag-ghost"
         chosen-class="drag-chosen"
         drag-class="drag-dragging"
         :animation="200"
         class="activities-dropzone"
-        @change="handleDayChange(day.id)"
+        @change="tripStore.handleDayActivitiesChange(day.id)"
       >
         <template #item="{ element }">
           <ActivityCard

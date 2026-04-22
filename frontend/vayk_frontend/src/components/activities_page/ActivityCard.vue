@@ -42,8 +42,12 @@ function handleRemove() {
 <template>
   <div class="activity-card" :class="{ 'timed-card': !!activity.time }">
     <div class="activity-left">
-      <div class="drag-indicator">
-        <span v-if="activity.time" class="lock-icon" aria-hidden="true">
+      <div
+        class="drag-indicator"
+        :class="{ 'drag-handle': !activity.time }"
+        aria-hidden="true"
+      >
+        <span v-if="activity.time" class="lock-icon">
           <svg viewBox="0 0 20 20" fill="none">
             <rect x="4" y="9" width="12" height="8" rx="2.5" stroke="currentColor" stroke-width="1.8" />
             <path
@@ -55,7 +59,7 @@ function handleRemove() {
           </svg>
         </span>
 
-        <span v-else class="grip-icon drag-handle" aria-hidden="true">
+        <span v-else class="grip-icon">
           <svg viewBox="0 0 20 20" fill="currentColor">
             <circle cx="7" cy="5" r="1.2" />
             <circle cx="13" cy="5" r="1.2" />

@@ -135,6 +135,8 @@ function handleRemove() {
   align-items: center;
   justify-content: center;
   padding-top: 2px;
+  width: 28px;
+  min-width: 28px;
 }
 
 .drag-handle {

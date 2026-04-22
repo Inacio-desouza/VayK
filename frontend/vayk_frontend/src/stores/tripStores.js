@@ -142,21 +142,19 @@ export const tripStore = reactive({
   handleDayActivitiesChange(dayId) {
     const day = this.getDay(dayId)
     if (!day) return
-
-    day.activities = day.activities.map((activity) => ({
-      ...activity,
-      dayId,
-      locked: Boolean(activity.time),
-    }))
+  
+    day.activities.forEach((activity) => {
+      activity.dayId = dayId
+      activity.locked = Boolean(activity.time)
+    })
   },
-
+  
   handleAlternatesChange() {
-    this.alternates = this.alternates.map((activity) => ({
-      ...activity,
-      dayId: null,
-      time: undefined,
-      locked: false,
-    }))
+    this.alternates.forEach((activity) => {
+      activity.dayId = null
+      activity.time = undefined
+      activity.locked = false
+    })
   },
 
   removeActivityFromCurrentLocation(activityId) {
