@@ -104,6 +104,17 @@ function unselectAll() {
   overflow-x: hidden;
 }
 
+.grid-wrapper::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 56px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff);
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
