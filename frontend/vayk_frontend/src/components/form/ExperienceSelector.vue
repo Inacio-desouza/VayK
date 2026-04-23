@@ -1,19 +1,27 @@
 <template>
   <div class="experience-selector">
-    <div class="grid-wrapper">
-      <div class="grid">
-        <button
-          v-for="option in options"
-          :key="option.id"
-          type="button"
-          class="card"
-          :class="{ selected: modelValue.includes(option.id) }"
-          @click="toggle(option.id)"
-        >
-          <component :is="option.icon" :size="20" :stroke-width="1.5" class="icon" />
-          <span class="label">{{ option.label }}</span>
-        </button>
+    <div class="grid-wrapper-container">
+      <div
+        ref="gridWrapper"
+        class="grid-wrapper"
+        @scroll="handleScroll"
+      >
+        <div class="grid">
+          <button
+            v-for="option in options"
+            :key="option.id"
+            type="button"
+            class="card"
+            :class="{ selected: modelValue.includes(option.id) }"
+            @click="toggle(option.id)"
+          >
+            <component :is="option.icon" :size="20" :stroke-width="1.5" class="icon" />
+            <span class="label">{{ option.label }}</span>
+          </button>
+        </div>
       </div>
+
+      <div v-if="showFade" class="bottom-fade"></div>
     </div>
 
     <div class="actions">
@@ -30,6 +38,7 @@
 </template>
 
 <script setup>
+import { ref, onMounted, nextTick } from 'vue'
 import {
   GlassWater,
   Landmark,
@@ -55,6 +64,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+const gridWrapper = ref(null)
+const showFade = ref(false)
 
 const options = [
   { id: 'nightlife', icon: GlassWater, label: 'Nightlife' },
@@ -89,6 +101,21 @@ function toggle(id) {
 function unselectAll() {
   emit('update:modelValue', [])
 }
+
+function handleScroll() {
+  const el = gridWrapper.value
+  if (!el) return
+
+  const isScrollable = el.scrollHeight > el.clientHeight
+  const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 4
+
+  showFade.value = isScrollable && !isAtBottom
+}
+
+onMounted(async () => {
+  await nextTick()
+  handleScroll()
+})
 </script>
 
 <style scoped>
@@ -97,15 +124,17 @@ function unselectAll() {
   width: 100%;
 }
 
-.grid-wrapper {
+.grid-wrapper-container {
   position: relative;
-  max-height: 372px;
+}
+
+.grid-wrapper {
+  max-height: 340px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.grid-wrapper::after {
-  content: '';
+.bottom-fade {
   position: absolute;
   left: 0;
   right: 0;
