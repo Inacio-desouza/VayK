@@ -113,6 +113,15 @@ function handleRemove() {
             ({{ activity.reviewCount.toLocaleString() }})
           </span>
         </p>
+
+        <p v-if="activity.url" class="activity-url">
+          <a :href="activity.url" target="_blank" rel="noopener noreferrer">
+            View on website
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M12.5 8.5H3.5M12.5 8.5V3.5M12.5 8.5V13.5M3.5 8.5H13.5M3.5 8.5V3.5M3.5 8.5V13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </p>
       </div>
     </div>
 
@@ -254,6 +263,28 @@ function handleRemove() {
 
 .star {
   color: #eab308;
+}
+
+.activity-url {
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+
+.activity-url a {
+  color: #2563eb;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.activity-url a:hover {
+  text-decoration: underline;
+}
+
+.activity-url svg {
+  width: 14px;
+  height: 14px;
 }
 
 .time-pill {

@@ -128,10 +128,11 @@ function formatActivity(activity, index, prefix = 'act') {
     id: `${prefix}-${index}`,
     title: activity.name,
     name: activity.name,
-    time: formatBackendTime(activity.date_time),
+    time: formatBackendTime(activity.recommended_time),
     address: activity.address,
     description: activity.description,
     rating: activity.rating,
+    url: activity.url,
   }
 }
 
