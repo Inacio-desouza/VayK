@@ -66,6 +66,14 @@ function handleRemove() {
         <h4 class="calendar-card-title">{{ titleFor(activity) }}</h4>
       </div>
 
+      <div v-if="activity.url" class="calendar-url">
+        <a :href="activity.url" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M12.5 8.5H3.5M12.5 8.5V3.5M12.5 8.5V13.5M3.5 8.5H13.5M3.5 8.5V3.5M3.5 8.5V13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
       <div class="calendar-card-right">
         <button
           v-if="activity.time"
@@ -290,5 +298,30 @@ function handleRemove() {
 
 .info-btn:hover .info-icon {
   color: #475569;
+}
+
+.calendar-url {
+  flex-shrink: 0;
+}
+
+.calendar-url a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  color: #94a3b8;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.calendar-url a:hover {
+  background: #f3f4f6;
+  color: #2563eb;
+}
+
+.calendar-url svg {
+  width: 14px;
+  height: 14px;
 }
 </style>
