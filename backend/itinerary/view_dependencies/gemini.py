@@ -95,7 +95,7 @@ def generate_itinerary(act_full, act_short, events, interests, preferences, arri
         Your goal is to select the best items based on their relevance to the user's interests and preferences.
         
         Scheduling Rules:
-        1. Itinerary Density: Provide exactly 2 to 3 items for every full day of the trip.
+        1. Itinerary Density: Provide exactly 2 to 3 items for every full day of the trip including the departure and arrival days.
         2. Proximity Logic: Group items scheduled on the same day by geographic proximity. Look at the 'address' fields to ensure activities for a single day are in the same neighborhood or within a reasonable transit distance.
         3. Logical Flow: Order items within a day chronologically (e.g., Morning, Afternoon, Evening).
         

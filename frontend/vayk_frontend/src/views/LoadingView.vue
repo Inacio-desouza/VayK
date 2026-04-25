@@ -167,7 +167,20 @@ function buildFormattedItinerary(places) {
   })
 
   ;(places.itinerary || []).forEach((activity, index) => {
-    const dayIndex = index % dayBuckets.length
+    let dayIndex = index % dayBuckets.length
+
+    // Use recommended_time to determine the correct day
+    if (activity.recommended_time) {
+      const timeMatch = String(activity.recommended_time).match(/^(\d{4})-(\d{2})-(\d{2})/)
+      if (timeMatch) {
+        const activityDate = new Date(`${timeMatch[1]}-${timeMatch[2]}-${timeMatch[3]}T00:00:00`)
+        if (!Number.isNaN(activityDate.getTime()) && startDate.getTime() > 0) {
+          const dayDiff = Math.floor((activityDate - startDate) / (1000 * 60 * 60 * 24))
+          dayIndex = Math.max(0, Math.min(dayDiff, dayBuckets.length - 1))
+        }
+      }
+    }
+
     dayBuckets[dayIndex].activities.push(formatActivity(activity, index, 'act'))
   })
 
