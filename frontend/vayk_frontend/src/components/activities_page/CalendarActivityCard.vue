@@ -15,6 +15,13 @@ function titleFor(activity) {
   return tripStore.getActivityTitle(activity)
 }
 
+function formatTime(timeString) {
+  if (!timeString) return ''
+  // If timeString contains a date portion (e.g., "2026-05-04 02:00 PM"), extract just the time
+  const match = timeString.match(/(\d{1,2}:\d{2}\s*[AP]M)/i)
+  return match ? match[1] : timeString
+}
+
 function handleEditTime() {
   const current = props.activity.time || ''
   const next = window.prompt('Enter time (example: 9:00 AM). Leave empty to remove.', current)
@@ -80,7 +87,7 @@ function handleRemove() {
           class="time-pill time-pill-filled visible"
           @click="handleEditTime"
         >
-          {{ activity.time }}
+          {{ formatTime(activity.time) }}
         </button>
 
         <button
