@@ -4,9 +4,10 @@
 
 VayK is a full-stack web application that generates personalized travel itineraries based on user input. Users provide a destination, travel dates, and preferences, and the system produces a curated itinerary by combining external API data with LLM generation.
 
+Link to app: https://vay-k-eight.vercel.app/
+
 ---
 
-'VayK/frontend/vayk_frontend/src/assets/navy_logo.png'
 ## Features
 
 - Destination search with dynamic suggestions
