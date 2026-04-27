@@ -54,7 +54,7 @@ function handleDayChange(dayId) {
               drag-class="drag-dragging"
               :animation="200"
               class="calendar-dropzone"
-              @add="tripStore.handleDayActivitiesChange(day.id)"
+              @change="tripStore.handleDayActivitiesChange(day.id)"
             >
               <template #item="{ element }">
                 <CalendarActivityCard

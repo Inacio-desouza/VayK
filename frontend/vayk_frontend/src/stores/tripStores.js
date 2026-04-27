@@ -176,10 +176,14 @@ export const tripStore = reactive({
     const day = this.getDay(dayId)
     if (!day) return
   
+    // Update metadata
     day.activities.forEach((activity) => {
       activity.dayId = dayId
       activity.locked = Boolean(activity.time)
     })
+  
+    // re-sort after ANY change
+    this.sortDayActivities(dayId)
   },
   
   handleAlternatesChange() {
