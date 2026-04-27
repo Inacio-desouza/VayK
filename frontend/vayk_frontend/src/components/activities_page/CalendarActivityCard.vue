@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import { tripStore } from '../../stores/tripStores'
 
 const props = defineProps({
@@ -11,23 +12,62 @@ const props = defineProps({
 
 const emit = defineEmits(['edit-time', 'open-detail', 'remove'])
 
+const nativeTimeInput = ref(null)
+
 function titleFor(activity) {
   return tripStore.getActivityTitle(activity)
 }
 
 function formatTime(timeString) {
   if (!timeString) return ''
-  // If timeString contains a date portion (e.g., "2026-05-04 02:00 PM"), extract just the time
   const match = timeString.match(/(\d{1,2}:\d{2}\s*[AP]M)/i)
   return match ? match[1] : timeString
 }
 
-function handleEditTime() {
-  const current = props.activity.time || ''
-  const next = window.prompt('Enter time (example: 9:00 AM). Leave empty to remove.', current)
+function timeToInputValue(timeString) {
+  if (!timeString) return ''
 
-  if (next === null) return
-  emit('edit-time', next.trim() || undefined)
+  const match = formatTime(timeString).match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i)
+  if (!match) return ''
+
+  let hour = Number(match[1])
+  const minute = match[2]
+  const period = match[3].toUpperCase()
+
+  if (period === 'PM' && hour !== 12) hour += 12
+  if (period === 'AM' && hour === 12) hour = 0
+
+  return `${String(hour).padStart(2, '0')}:${minute}`
+}
+
+function inputValueToTime(value) {
+  if (!value) return undefined
+
+  const [hourString, minute] = value.split(':')
+  let hour = Number(hourString)
+  const period = hour >= 12 ? 'PM' : 'AM'
+
+  hour = hour % 12
+  if (hour === 0) hour = 12
+
+  return `${hour}:${minute} ${period}`
+}
+
+function openTimePicker() {
+  if (!nativeTimeInput.value) return
+
+  nativeTimeInput.value.value = timeToInputValue(props.activity.time)
+
+  if (nativeTimeInput.value.showPicker) {
+    nativeTimeInput.value.showPicker()
+  } else {
+    nativeTimeInput.value.click()
+    nativeTimeInput.value.focus()
+  }
+}
+
+function handleTimeChange(event) {
+  emit('edit-time', inputValueToTime(event.target.value))
 }
 
 function handleOpenDetail() {
@@ -75,30 +115,34 @@ function handleRemove() {
 
       <div v-if="activity.url" class="calendar-url">
         <a :href="activity.url" target="_blank" rel="noopener noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-              <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
-            </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+            <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+          </svg>
         </a>
       </div>
 
       <div class="calendar-card-right">
-        <button
-          v-if="activity.time"
-          class="time-pill time-pill-filled visible"
-          @click="handleEditTime"
-        >
-          {{ formatTime(activity.time) }}
-        </button>
+        <div class="time-picker-wrap">
+          <button
+            class="time-pill"
+            :class="activity.time ? 'time-pill-filled visible' : 'time-pill-ghost hover-only'"
+            type="button"
+            @click.stop="openTimePicker"
+          >
+            {{ activity.time ? formatTime(activity.time) : 'Add time' }}
+          </button>
 
-        <button
-          v-else
-          class="time-pill time-pill-ghost hover-only"
-          @click="handleEditTime"
-        >
-          Add time
-        </button>
+          <input
+            ref="nativeTimeInput"
+            class="native-time-input"
+            type="time"
+            step="300"
+            @change="handleTimeChange"
+            @click.stop
+          />
+        </div>
 
-        <button class="info-btn" @click="handleOpenDetail">
+        <button class="info-btn" type="button" @click="handleOpenDetail">
           <span class="info-icon">
             <svg viewBox="0 0 20 20" fill="none">
               <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6" />
@@ -108,7 +152,7 @@ function handleRemove() {
           </span>
         </button>
 
-        <button class="icon-btn remove" @click="handleRemove">×</button>
+        <button class="icon-btn remove" type="button" @click="handleRemove">×</button>
       </div>
     </div>
   </div>
@@ -200,6 +244,21 @@ function handleRemove() {
   gap: 8px;
   flex-shrink: 0;
   margin-left: auto;
+}
+
+.time-picker-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.native-time-input {
+  position: absolute;
+  inset: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .time-pill {
