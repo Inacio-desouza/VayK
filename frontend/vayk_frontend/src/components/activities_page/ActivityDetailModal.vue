@@ -6,6 +6,18 @@ defineEmits(['close'])
 function titleFor(activity) {
   return tripStore.getActivityTitle(activity)
 }
+
+function getLinkLabel(url) {
+  if (!url) return ''
+
+  const lower = url.toLowerCase()
+
+  if (lower.includes('google.com/maps') || lower.includes('maps')) {
+    return 'Open in Maps'
+  }
+
+  return 'View details'
+}
 </script>
 
 <template>
@@ -80,13 +92,13 @@ function titleFor(activity) {
           </div>
 
           <a
-            v-if="tripStore.selectedActivity.link"
-            :href="tripStore.selectedActivity.link"
+            v-if="tripStore.selectedActivity.url"
+            :href="tripStore.selectedActivity.url"
             target="_blank"
             rel="noopener noreferrer"
             class="visit-link"
           >
-            Visit website
+            {{ getLinkLabel(tripStore.selectedActivity.url) }}
           </a>
         </template>
       </div>
