@@ -11,6 +11,7 @@ import PreferenceInput from '../components/form/PreferenceInput.vue'
 import GenerateItinerary from '../components/form/GenerateItinerary.vue'
 
 import logoUrl from '../assets/navy_logo.png'
+
 const router = useRouter()
 
 const tripForm = reactive({
@@ -32,30 +33,24 @@ const submitPopup = reactive({
   messages: [],
 })
 
-// --- Clear errors on input ---
 watch(
   () => tripForm.destination,
   (newValue) => {
-    if (newValue) {
-      errors.destination = ''
-    }
+    if (newValue) errors.destination = ''
   },
 )
 
 watch(
   () => tripForm.arrivalDate,
   (newValue) => {
-    if (newValue) {
-      errors.arrivalDate = ''
-    }
+    if (newValue) errors.arrivalDate = ''
   },
 )
 
-// --- Real-time date validation ---
 watch(
   () => tripForm.departureDate,
   (newValue) => {
-    if (newValue && errors.departureDate === 'Please select a departure date.') {
+    if (newValue && errors.departureDate === 'Please select a return date.') {
       errors.departureDate = ''
     }
   },
@@ -63,41 +58,40 @@ watch(
 
 watch(
   () => [tripForm.arrivalDate, tripForm.departureDate],
-  ([arrival, departure]) => {
-    if (!arrival || !departure) {
-      if (errors.departureDate === 'Departure date cannot be before arrival date.') {
+  ([departure, returnDate]) => {
+    if (!departure || !returnDate) {
+      if (errors.departureDate === 'Return date cannot be before departure date.') {
         errors.departureDate = ''
       }
       return
     }
 
-    const arrivalDate = new Date(arrival)
     const departureDate = new Date(departure)
+    const returnDateObject = new Date(returnDate)
 
-    if (departureDate < arrivalDate) {
-      errors.departureDate = 'Departure date cannot be before arrival date.'
+    if (returnDateObject < departureDate) {
+      errors.departureDate = 'Return date cannot be before departure date.'
     } else {
       errors.departureDate = ''
     }
   },
 )
 
-watch(() => tripForm.arrivalDate, (arrival) => {
+watch(() => tripForm.arrivalDate, (departure) => {
   const today = new Date().toISOString().split('T')[0]
 
-  if (arrival && arrival < today) {
-    errors.arrivalDate = 'Arrival date cannot be in the past.'
-  } else if (errors.arrivalDate === 'Arrival date cannot be in the past.') {
+  if (departure && departure < today) {
+    errors.arrivalDate = 'Departure date cannot be in the past.'
+  } else if (errors.arrivalDate === 'Departure date cannot be in the past.') {
     errors.arrivalDate = ''
   }
 })
 
-// --- Validate form inputs ---
 function validateForm() {
   errors.destination = ''
   errors.arrivalDate = ''
 
-  if (errors.departureDate === 'Please select a departure date.') {
+  if (errors.departureDate === 'Please select a return date.') {
     errors.departureDate = ''
   }
 
@@ -111,31 +105,31 @@ function validateForm() {
   }
 
   if (!tripForm.arrivalDate) {
-    errors.arrivalDate = 'Please select an arrival date.'
-    popupMessages.push('Please select an arrival date.')
-    isValid = false
-  }
-
-  if (!tripForm.departureDate) {
-    errors.departureDate = 'Please select a departure date.'
+    errors.arrivalDate = 'Please select a departure date.'
     popupMessages.push('Please select a departure date.')
     isValid = false
   }
 
-  if (tripForm.arrivalDate && tripForm.departureDate) {
-  const arrivalDate = new Date(tripForm.arrivalDate)
-  const departureDate = new Date(tripForm.departureDate)
-
-  if (departureDate < arrivalDate) {
-    errors.departureDate = 'Departure date cannot be before arrival date.'
-
-    if (!popupMessages.includes('Departure date cannot be before arrival date.')) {
-      popupMessages.push('Departure date cannot be before arrival date.')
-    }
-
+  if (!tripForm.departureDate) {
+    errors.departureDate = 'Please select a return date.'
+    popupMessages.push('Please select a return date.')
     isValid = false
   }
-}
+
+  if (tripForm.arrivalDate && tripForm.departureDate) {
+    const departureDate = new Date(tripForm.arrivalDate)
+    const returnDate = new Date(tripForm.departureDate)
+
+    if (returnDate < departureDate) {
+      errors.departureDate = 'Return date cannot be before departure date.'
+
+      if (!popupMessages.includes('Return date cannot be before departure date.')) {
+        popupMessages.push('Return date cannot be before departure date.')
+      }
+
+      isValid = false
+    }
+  }
 
   return { isValid, popupMessages }
 }
@@ -155,14 +149,12 @@ function handleSubmit() {
   }
 
   closePopup()
-  
-   // Save form to store
+
   tripStore.resetGenerationState()
   tripStore.setTripForm(tripForm)
 
   console.log('Submitting trip form:', JSON.parse(JSON.stringify(tripForm)))
 
-  // Go to loading screen
   router.push('/loading')
 }
 </script>
@@ -176,6 +168,7 @@ function handleSubmit() {
         alt="VayK logo"
         style="margin-top: 35px;"
       />
+
       <h2 class="subheader">Build your trip around experiences, not logistics.</h2>
 
       <div style="width: 100%">
@@ -192,12 +185,12 @@ function handleSubmit() {
         <div class="date-row">
           <div>
             <StartDateInput v-model="tripForm.arrivalDate" />
-            <h4 class="form-question small-label">Arrival Date</h4>
+            <h4 class="form-question small-label">Departure Date</h4>
           </div>
 
           <div>
             <EndDateInput v-model="tripForm.departureDate" />
-            <h4 class="form-question small-label">Departure Date</h4>
+            <h4 class="form-question small-label">Return Date</h4>
           </div>
         </div>
 
@@ -218,12 +211,14 @@ function handleSubmit() {
         <h3 class="form-question" style="margin-bottom: 0px">
           What are your interests?
         </h3>
+
         <h4
           class="form-question"
           style="font-size: 14px; margin-top: 10px; margin-left: 1px; margin-bottom: 12px;"
         >
           Select all that interest you
         </h4>
+
         <ExperienceSelector v-model="tripForm.interests" />
       </div>
 
@@ -233,9 +228,11 @@ function handleSubmit() {
         <h3 class="form-question">
           Add additional preferences below
         </h3>
+
         <h4 class="form-question" style="font-size: 14px; margin-bottom: 10px;">
           Tell us more about yourself and your interests
         </h4>
+
         <PreferenceInput v-model="tripForm.preferences" />
       </div>
 
@@ -248,6 +245,7 @@ function handleSubmit() {
             </li>
           </ul>
         </div>
+
         <button type="button" class="error-popup-close" @click="closePopup">
           ×
         </button>
@@ -278,7 +276,7 @@ function handleSubmit() {
   max-width: 980px;
   box-sizing: border-box;
   padding: 42px 40px 36px;
-  background: var(--surface);  
+  background: var(--surface);
 }
 
 .logo-img {
