@@ -59,7 +59,7 @@ function handleToggleAlternates() {
     <main class="content">
       <div class="content-inner">
         <ListView
-          v-if="isMobile"
+          v-if="isMobile || tripStore.activeView === 'list'"
           @edit-time="handleEditTime"
           @open-detail="handleOpenDetail"
           @remove-activity="handleRemoveActivity"
