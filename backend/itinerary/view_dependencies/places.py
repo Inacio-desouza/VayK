@@ -20,7 +20,7 @@ GRID_SIZE = 2
 
 MIN_REVIEWS = 1000
 
-SCORE_THRESHOLD = 65
+SCORE_THRESHOLD = 55
 
 URL = "https://places.googleapis.com/v1/places:searchNearby"
 
@@ -278,7 +278,7 @@ def collect_places(LAT, LNG):
             score = compute_score(rating, reviews)
 
             if reviews < MIN_REVIEWS:
-                if rating < 4.4:
+                if rating < 4.0:
                     continue
 
             else: 
