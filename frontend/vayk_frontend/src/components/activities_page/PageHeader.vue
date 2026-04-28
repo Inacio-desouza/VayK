@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { tripStore } from '../../stores/tripStores'
 import { downloadICS } from '../../utils/exportICS'
+import { downloadPDF } from '../../utils/exportPDF'
 
 const router = useRouter()
 
@@ -62,16 +63,30 @@ function goHome() {
           </button>
         </div>
 
-        <button class="export-btn" @click="downloadICS">
-          <span class="export-icon" aria-hidden="true">
-            <svg viewBox="0 0 20 20" fill="none">
-              <path d="M10 3V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              <path d="M6 10L10 14L14 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M3 16H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-            </svg>
-          </span>
-          Export to Calendar
-        </button>
+        <div class="export-actions">
+          <button class="export-btn" @click="downloadPDF">
+            <span class="export-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none">
+                <path d="M5 3H12L15 6V17H5V3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                <path d="M12 3V6H15" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                <path d="M7.5 10H12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M7.5 13H12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+            </span>
+            Export to PDF
+          </button>
+
+          <button class="export-btn" @click="downloadICS">
+            <span class="export-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none">
+                <path d="M10 3V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                <path d="M6 10L10 14L14 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M3 16H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+            </span>
+            Export to Calendar
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -136,6 +151,19 @@ function goHome() {
   background: #f8fafc;
   box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
   color: #1f2937;
+}
+
+.export-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .export-actions {
+    justify-content: flex-start;
+  }
 }
 
 .export-icon {
