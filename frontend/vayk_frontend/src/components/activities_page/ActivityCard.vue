@@ -137,6 +137,7 @@ function handleRemove() {
           <div class="time-picker-wrap">
             <button
               class="time-pill"
+              data-tour="time-button"
               :class="activity.time ? 'time-pill-filled visible' : 'time-pill-ghost hover-only'"
               type="button"
               @click.stop="openTimePicker"
@@ -186,7 +187,12 @@ function handleRemove() {
     </div>
 
     <div class="activity-actions">
-      <button class="info-btn" type="button" @click="handleOpenDetail">
+      <button
+        class="info-btn"
+        data-tour="info-button"
+        type="button"
+        @click="handleOpenDetail"
+      >
         <span class="info-icon">
           <svg viewBox="0 0 20 20" fill="none">
             <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.6" />
@@ -196,7 +202,14 @@ function handleRemove() {
         </span>
       </button>
 
-      <button class="icon-btn remove" type="button" @click="handleRemove">×</button>
+      <button
+        class="icon-btn remove"
+        data-tour="remove-button"
+        type="button"
+        @click="handleRemove"
+      >
+        ×
+      </button>
     </div>
   </div>
 </template>

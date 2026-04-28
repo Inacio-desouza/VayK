@@ -8,6 +8,7 @@ import CalendarView from '../components/activities_page/CalendarView.vue'
 import AlternatesTab from '../components/activities_page/AlternatesTab.vue'
 import AlternatesSidebar from '../components/activities_page/AlternatesSidebar.vue'
 import ActivityDetailModal from '../components/activities_page/ActivityDetailModal.vue'
+import ActivitiesTour from '../components/activities_page/ActivitiesTour.vue'
 
 const router = useRouter()
 
@@ -72,6 +73,8 @@ function handleToggleAlternates() {
     />
 
     <ActivityDetailModal @close="handleCloseDetail" />
+
+    <ActivitiesTour />
   </div>
 </template>
 

@@ -17,6 +17,7 @@ function onDragEnd() {
 <template>
   <aside
     class="alternates-sidebar"
+    data-tour="alternates"
     :class="{ open: tripStore.isAlternatesOpen }"
     :style="tripStore.isDraggingAlternate ? { pointerEvents: 'none' } : {}"
   >

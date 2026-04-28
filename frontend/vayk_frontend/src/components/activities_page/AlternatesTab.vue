@@ -8,6 +8,7 @@ defineEmits(['toggle'])
   <button
     v-if="!tripStore.isAlternatesOpen"
     class="alternates-tab"
+    data-tour="alternates"
     @click="$emit('toggle')"
   >
     <span class="tab-arrow">‹</span>

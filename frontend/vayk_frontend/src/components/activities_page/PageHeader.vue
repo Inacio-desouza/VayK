@@ -27,7 +27,7 @@ function goHome() {
 
       <!-- RIGHT -->
       <div class="header-right">
-        <div class="view-toggle">
+        <div class="view-toggle" data-tour="view-toggle">
           <button
             class="toggle-btn"
             :class="{ active: tripStore.activeView === 'list' }"
@@ -63,7 +63,7 @@ function goHome() {
           </button>
         </div>
 
-        <div class="export-actions">
+        <div class="export-actions" data-tour="export-actions">
           <button class="export-btn" @click="downloadPDF">
             <span class="export-icon" aria-hidden="true">
               <svg viewBox="0 0 20 20" fill="none">
@@ -128,9 +128,24 @@ function goHome() {
 }
 
 /* SHARED BUTTON STYLE */
-.export-btn,
 .back-btn {
   margin-top: 14px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  transition: background 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+.export-btn {
+  margin-top: 0px;
   border: 1px solid #e5e7eb;
   background: white;
   padding: 10px 16px;
@@ -154,10 +169,12 @@ function goHome() {
 }
 
 .export-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  height: auto; 
+  padding: 0; 
 }
 
 @media (max-width: 900px) {

@@ -25,6 +25,29 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;')
 }
 
+function formatPdfTime(value) {
+  if (!value) return ''
+
+  const date = new Date(value)
+
+  if (!Number.isNaN(date.getTime())) {
+    return date.toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+    })
+  }
+
+  const timeMatch = String(value).match(/(\d{1,2}):(\d{2})/)
+  if (!timeMatch) return String(value)
+
+  const hours = Number(timeMatch[1])
+  const minutes = timeMatch[2]
+  const suffix = hours >= 12 ? 'PM' : 'AM'
+  const displayHour = hours % 12 || 12
+
+  return `${displayHour}:${minutes} ${suffix}`
+}
+
 export function downloadPDF() {
   const printWindow = window.open('', '_blank')
   if (!printWindow) return
@@ -35,9 +58,14 @@ export function downloadPDF() {
         ? day.activities
             .map((activity) => {
               const title = escapeHtml(titleFor(activity))
-              const time = escapeHtml(activity.time || 'No set time')
+              const time = formatPdfTime(activity.time)
               const subtitle = escapeHtml(subtitleFor(activity))
               const description = escapeHtml(activity.description)
+
+              const timePill = time
+                ? `<span class="time-pill">${escapeHtml(time)}</span>`
+                : ''
+
               const rating = activity.rating
                 ? `<p class="meta"><strong>Rating:</strong> ★ ${escapeHtml(activity.rating)}${
                     activity.reviewCount
@@ -45,6 +73,7 @@ export function downloadPDF() {
                       : ''
                   }</p>`
                 : ''
+
               const link = activity.url
                 ? `<p class="meta"><strong>Link:</strong> <a href="${escapeHtml(activity.url)}">${linkLabel(activity.url)}</a></p>`
                 : ''
@@ -53,7 +82,7 @@ export function downloadPDF() {
                 <div class="activity">
                   <div class="activity-header">
                     <h3>${title}</h3>
-                    <span>${time}</span>
+                    ${timePill}
                   </div>
 
                   ${subtitle ? `<p class="meta"><strong>Location:</strong> ${subtitle}</p>` : ''}
@@ -86,16 +115,27 @@ export function downloadPDF() {
       <head>
         <title>${escapeHtml(tripStore.tripTitle)} Itinerary</title>
         <style>
+          @page {
+            margin: 0;
+          }
+
           * {
             box-sizing: border-box;
           }
 
+          html,
           body {
             margin: 0;
+            padding: 0;
+          }
+
+          body {
             padding: 36px;
             font-family: Inter, Arial, sans-serif;
             background: #fcfcfd;
             color: #111827;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
 
           .pdf-header {
@@ -164,18 +204,27 @@ export function downloadPDF() {
             display: flex;
             justify-content: space-between;
             gap: 16px;
-            align-items: flex-start;
+            align-items: center;
           }
 
           .activity-header h3 {
             margin: 0;
             font-size: 18px;
+            line-height: 1.3;
           }
 
-          .activity-header span {
-            color: #27429b;
-            font-weight: 700;
+          .time-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 18px;
+            border-radius: 999px;
+            background: #e6eefc;
+            color: #182655;
+            font-weight: 800;
+            font-size: 16px;
             white-space: nowrap;
+            flex-shrink: 0;
           }
 
           .meta {
@@ -209,10 +258,7 @@ export function downloadPDF() {
               padding: 24px;
             }
 
-            .day-card {
-              break-inside: avoid;
-            }
-
+            .day-card,
             .activity {
               break-inside: avoid;
             }
