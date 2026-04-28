@@ -103,10 +103,10 @@ function handleRemove() {
     <div class="activity-left">
       <div
         class="drag-indicator"
-        :class="{ 'drag-handle': !activity.time }"
+        :class="{ 'drag-handle': !!activity.rating }"
         aria-hidden="true"
       >
-        <span v-if="activity.time" class="lock-icon">
+        <span v-if="!activity.rating" class="lock-icon">
           <svg viewBox="0 0 20 20" fill="none">
             <rect x="4" y="9" width="12" height="8" rx="2.5" stroke="currentColor" stroke-width="1.8" />
             <path
