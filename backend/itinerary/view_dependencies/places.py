@@ -18,9 +18,9 @@ if not API_KEY:
 SEARCH_RADIUS_MILES = 20
 GRID_SIZE = 2
 
-MIN_REVIEWS = 500
+MIN_REVIEWS = 1000
 
-SCORE_THRESHOLD = 60
+SCORE_THRESHOLD = 65
 
 URL = "https://places.googleapis.com/v1/places:searchNearby"
 
@@ -277,17 +277,13 @@ def collect_places(LAT, LNG):
             reviews = p.get("userRatingCount", 0)
             score = compute_score(rating, reviews)
 
-            if ptype == "restaurant" and score < 10 + SCORE_THRESHOLD:
-                continue
+            if reviews < MIN_REVIEWS:
+                if rating < 4.4:
+                    continue
 
-            if ptype == "bar" and score < 10 + SCORE_THRESHOLD:
-                continue
-
-            if ptype == "tourist_attraction" and score < SCORE_THRESHOLD:
-                continue
-
-            if ptype == "cultural_landmark" and score < SCORE_THRESHOLD - 10:
-                continue
+            else: 
+                if score < SCORE_THRESHOLD:
+                    continue
 
             name = p.get("displayName", {}).get("text")
             address = p.get("formattedAddress")
