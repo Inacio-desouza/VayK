@@ -67,6 +67,7 @@ function onDragEnd() {
 <style scoped>
 .alternates-sidebar {
   position: fixed;
+  z-index: 1000; 
   top: 0;
   right: 0;
   width: 360px;

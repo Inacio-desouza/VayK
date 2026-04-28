@@ -176,7 +176,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <button class="tour-start-btn" type="button" @click="startTour">
+  <button
+    v-if="!tripStore.isAlternatesOpen"
+    class="tour-start-btn"
+    type="button"
+    @click="startTour"
+  >
     How to use this page
   </button>
 
