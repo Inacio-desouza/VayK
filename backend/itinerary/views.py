@@ -25,6 +25,7 @@ class ItineraryView:
     def __init__(self):
         self.activities_short = []
         self.activities_full = []
+        self.activities_success = True
         self.events = []
         self.ev_cond = Condition()
 
@@ -139,7 +140,10 @@ def get_itinerary(request):
 
         print("Generating itinerary with Gemini")
         itinerary = generate_itinerary(itinerary_view.activities_full, itinerary_view.activities_short, itinerary_view.events, interests, preferences, arrival_date, departure_date)
-        
+
+        if itinerary_view.activities_success == False:
+            City.objects.filter(id=city_object.id).delete()
+
         end_time = time.perf_counter()
         elapsed_time = end_time - start_time
         print(f"Total time for itinerary generation: {elapsed_time:.2f} seconds")

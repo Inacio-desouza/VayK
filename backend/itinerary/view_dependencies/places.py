@@ -20,7 +20,7 @@ GRID_SIZE = 2
 
 MIN_REVIEWS = 1000
 
-SCORE_THRESHOLD = 55
+SCORE_THRESHOLD = 50
 
 URL = "https://places.googleapis.com/v1/places:searchNearby"
 
@@ -129,7 +129,7 @@ def build_grid(CENTER_LAT, CENTER_LNG):
 
 
 
-def make_request_with_retry(url, body, headers, max_retries=5):
+def make_request_with_retry(url, body, headers, max_retries=3):
     """
     Make an HTTP POST request with exponential backoff retry logic.
 
@@ -221,7 +221,7 @@ def fetch_places(lat, lng, radius):
         data = make_request_with_retry(URL, body, headers)
 
         if not data:
-            return []
+            return None
 
         results = data.get("places", [])
 
@@ -259,9 +259,17 @@ def collect_places(LAT, LNG):
 
     cell_radius = compute_cell_radius()
 
+    success = True
+
     for lat, lng in grid:
 
         results = fetch_places(lat, lng, cell_radius)
+
+        if results is None:
+            print("Failed to fetch places for cell centered at "
+                  f"({lat}, {lng}). Skipping this cell.")
+            success = False
+            continue
 
         print(f"Fetched {len(results)} places for cell centered at ({lat}, {lng})")
 
@@ -307,7 +315,7 @@ def collect_places(LAT, LNG):
                 "lng": lng
             }
 
-    return list(all_places.values())
+    return {'places': list(all_places.values()), 'success': success}
 
 
 # =====================================
@@ -329,17 +337,17 @@ def get_top_places(LAT, LNG):
         list[dict]: A list of place dictionaries sorted by score (highest first).
     """
 
-    places = collect_places(LAT, LNG)
+    results = collect_places(LAT, LNG)
 
-    print(f"Collected {len(places)} places")
+    print(f"Collected {len(results['places'])} places")
 
     sorted_places = sorted(
-        places,
+        results['places'],
         key=lambda x: x["score"],
         reverse=True
     )
 
-    return sorted_places
+    return {'places': sorted_places, 'success': results['success']}
 
 
 #fix database attributes
@@ -362,8 +370,13 @@ def thread_top_places(itinerary_view, city_object, lat, lng):
             persisted to the database via the Activity model.
     """
     start = time.perf_counter()
-    activities = get_top_places(lat, lng)
-    for activity in activities:
+    result = get_top_places(lat, lng)
+
+    if result['success'] == False:
+        print("No places found for the given location.")
+        itinerary_view.activities_success = False
+
+    for activity in result['places']:
                 Activity.objects.create(
                     city=city_object,
                     name=activity["name"],
@@ -407,7 +420,7 @@ if __name__ == "__main__":
 
     print("\nTop Tourist Attractions:\n")
 
-    for p in results:
+    for p in results['places']:
 
         print(
             f'{p["score"]:.2f} | '
