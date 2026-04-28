@@ -1,9 +1,35 @@
 <script setup>
+import { ref } from 'vue'
 import draggable from 'vuedraggable'
 import { tripStore } from '../../stores/tripStores'
 import AlternatesCard from './AlternatesCard.vue'
 
 defineEmits(['toggle', 'open-detail'])
+
+const sidebarWidth = ref(360)
+const isResizing = ref(false)
+
+function onResizeStart() {
+  isResizing.value = true
+  document.addEventListener('mousemove', onResize)
+  document.addEventListener('mouseup', onResizeEnd)
+}
+
+function onResize(e) {
+  if (!isResizing.value) return
+
+  const newWidth = window.innerWidth - e.clientX
+  // Set min/max width constraints
+  if (newWidth >= 250 && newWidth <= 600) {
+    sidebarWidth.value = newWidth
+  }
+}
+
+function onResizeEnd() {
+  isResizing.value = false
+  document.removeEventListener('mousemove', onResize)
+  document.removeEventListener('mouseup', onResizeEnd)
+}
 
 function onDragStart() {
   tripStore.isDraggingAlternate = true
@@ -18,9 +44,18 @@ function onDragEnd() {
   <aside
     class="alternates-sidebar"
     data-tour="alternates"
-    :class="{ open: tripStore.isAlternatesOpen }"
-    :style="tripStore.isDraggingAlternate ? { pointerEvents: 'none' } : {}"
+    :class="{ open: tripStore.isAlternatesOpen, resizing: isResizing }"
+    :style="{ 
+      width: `${sidebarWidth}px`,
+      pointerEvents: tripStore.isDraggingAlternate ? 'none' : 'auto'
+    }"
   >
+    <div 
+      class="resize-handle"
+      @mousedown="onResizeStart"
+      :class="{ active: isResizing }"
+    />
+
     <div class="alternates-header">
       <div>
         <h2>Alternate Activities</h2>
@@ -67,7 +102,7 @@ function onDragEnd() {
 <style scoped>
 .alternates-sidebar {
   position: fixed;
-  z-index: 1000; 
+  z-index: 1000;
   top: 0;
   right: 0;
   width: 360px;
@@ -84,6 +119,28 @@ function onDragEnd() {
 
 .alternates-sidebar.open {
   transform: translateX(0);
+}
+
+.alternates-sidebar.resizing {
+  transition: none;
+  user-select: none;
+}
+
+.resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  cursor: ew-resize;
+  background: transparent;
+  transition: background 0.15s ease;
+  z-index: 100;
+}
+
+.resize-handle:hover,
+.resize-handle.active {
+  background: #3b82f6;
 }
 
 .alternates-header {
@@ -165,14 +222,5 @@ function onDragEnd() {
   .alternates-sidebar {
     width: min(100%, 360px);
   }
-}
-</style>
-
-<style>
-.drag-fallback {
-  opacity: 0.85;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
-  z-index: 9999;
-  pointer-events: none;
 }
 </style>
