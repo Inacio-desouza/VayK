@@ -1,10 +1,21 @@
 <script setup>
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { tripStore } from '../../stores/tripStores'
 import { downloadICS } from '../../utils/exportICS'
 import { downloadPDF } from '../../utils/exportPDF'
 
 const router = useRouter()
+const isMobile = ref(false)
+
+onMounted(() => {
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 768
+  }
+
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+})
 
 function goHome() {
   router.push('/')
@@ -27,7 +38,7 @@ function goHome() {
 
       <!-- RIGHT -->
       <div class="header-right">
-        <div class="view-toggle" data-tour="view-toggle">
+        <div class="view-toggle" data-tour="view-toggle" v-if="!isMobile">
           <button
             class="toggle-btn"
             :class="{ active: tripStore.activeView === 'list' }"
@@ -253,7 +264,7 @@ function goHome() {
   display: block;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .header-inner {
     flex-direction: column;
     align-items: flex-start;
