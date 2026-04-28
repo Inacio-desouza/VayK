@@ -277,16 +277,6 @@ onUnmounted(() => {
   padding: 2rem;
 }
 
-.loading-card {
-  background: white;
-  padding: 2.5rem 2rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  width: 100%;
-  max-width: 480px;
-}
-
 .loading-card h1 {
   font-size: 1.8rem;
   margin-bottom: 0.75rem;
@@ -294,10 +284,14 @@ onUnmounted(() => {
 }
 
 .loading-message {
-  font-size: 1rem;
+  font-size: 1.125rem;
   color: #475569;
   margin-bottom: 1.5rem;
   min-height: 1.5em;
+}
+
+.loading-card {
+  text-align: center;
 }
 
 .loading-message span {
