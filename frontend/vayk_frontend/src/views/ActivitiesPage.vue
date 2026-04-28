@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { tripStore } from '../stores/tripStores'
 import PageHeader from '../components/activities_page/PageHeader.vue'
@@ -11,6 +11,7 @@ import ActivityDetailModal from '../components/activities_page/ActivityDetailMod
 import ActivitiesTour from '../components/activities_page/ActivitiesTour.vue'
 
 const router = useRouter()
+const isMobile = ref(false)
 
 onMounted(() => {
   if (!tripStore.days.length) {
@@ -20,6 +21,14 @@ onMounted(() => {
       router.push('/')
     }
   }
+
+  // Detect mobile
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth <= 768
+  }
+
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
 })
 
 function handleEditTime(activityId, newTime) {
@@ -50,7 +59,7 @@ function handleToggleAlternates() {
     <main class="content">
       <div class="content-inner">
         <ListView
-          v-if="tripStore.activeView === 'list'"
+          v-if="isMobile"
           @edit-time="handleEditTime"
           @open-detail="handleOpenDetail"
           @remove-activity="handleRemoveActivity"
