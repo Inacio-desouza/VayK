@@ -140,7 +140,7 @@ function goHome() {
 
 /* SHARED BUTTON STYLE */
 .back-btn {
-  margin-top: 14px;
+  margin-top: 18px;
   border: 1px solid #e5e7eb;
   background: white;
   padding: 10px 16px;

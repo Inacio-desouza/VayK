@@ -225,17 +225,37 @@ function handleRemove() {
   display: block;
 }
 
-.calendar-card-title {
-  margin: 0;
-  font-size: 17px;
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  color: #0f172a;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+@media(min-width: 1001px){
+  .calendar-card-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: #0f172a;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 1000px) {
+  .calendar-card-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .calendar-card-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: #0f172a;
+    width: 100%;
+  }
 }
 
 .calendar-card-right {
