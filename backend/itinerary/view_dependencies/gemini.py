@@ -61,7 +61,7 @@ def map_item(item, activities, events, is_itinerary):
 
     return res
 
-def generate_itinerary(act_full, act_short, events, interests, preferences, arrival, departure):
+def generate_itinerary(location_name, act_full, act_short, events, interests, preferences, arrival, departure):
     """
     Generate a travel itinerary using Gemini AI based on user preferences.
 
@@ -101,7 +101,8 @@ def generate_itinerary(act_full, act_short, events, interests, preferences, arri
         
         Prioritization Rules:
         1. Prioritize local activities and unique local events.
-        2. Strictly avoid large national brand names or global chains.
+        2. Prioritize activities within the city limits of the destination over those in neighboring areas.
+        3. Strictly avoid large national brand names or global chains.
         
         Output Rules:
         - Itinerary: Return an array of objects. Each object must have an 'index' (the original position in the provided list), a 'source' ('activity' or 'event'), and a 'recommended_time'.
@@ -143,6 +144,7 @@ def generate_itinerary(act_full, act_short, events, interests, preferences, arri
     )
 
     prompt = json.dumps({
+        "destination": location_name,
         "arrival": arrival,
         "departure": departure,
         "interests": interests,

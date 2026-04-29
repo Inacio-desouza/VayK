@@ -139,7 +139,7 @@ def get_itinerary(request):
         print("Finished getting from database and events")
 
         print("Generating itinerary with Gemini")
-        itinerary = generate_itinerary(itinerary_view.activities_full, itinerary_view.activities_short, itinerary_view.events, interests, preferences, arrival_date, departure_date)
+        itinerary = generate_itinerary(destination, itinerary_view.activities_full, itinerary_view.activities_short, itinerary_view.events, interests, preferences, arrival_date, departure_date)
 
         if itinerary_view.activities_success == False:
             City.objects.filter(id=city_object.id).delete()

@@ -15,7 +15,7 @@ API_KEY = settings.PLACES_KEY
 if not API_KEY:
     raise ValueError("API_KEY is not set")
 
-SEARCH_RADIUS_MILES = 15
+SEARCH_RADIUS_MILES = 10
 GRID_SIZE = 2
 
 MIN_REVIEWS = 1000
