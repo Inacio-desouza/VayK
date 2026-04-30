@@ -18,6 +18,7 @@ class Activity(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="activities")
 
     name = models.CharField(max_length=200)
+    type = models.CharField(max_length=50, null=True, blank=True)
 
     # Core metrics
     rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)

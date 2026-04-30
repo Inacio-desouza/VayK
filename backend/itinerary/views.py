@@ -49,6 +49,7 @@ def thread_activities(city_object, itinerary_view):
     for activity in itinerary_view.activities_full:
         itinerary_view.activities_short.append({
             "name": activity["name"],
+            "type": activity["type"],
             "rating": activity["rating"],
             "reviews": activity["num_reviews"],
             "address": activity["address"]

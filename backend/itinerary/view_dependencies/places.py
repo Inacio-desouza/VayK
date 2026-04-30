@@ -196,7 +196,7 @@ def fetch_places(lat, lng, radius):
             "places.rating",
             "places.userRatingCount",
             "places.googleMapsUri",
-            "places.types",
+            "places.primaryType",
             "places.editorialSummary"
         ])
     }
@@ -224,9 +224,6 @@ def fetch_places(lat, lng, radius):
             return None
 
         results = data.get("places", [])
-
-        for p in results:
-            p["place_type"] = place_type
 
         places.extend(results)
 
@@ -280,7 +277,7 @@ def collect_places(LAT, LNG):
             if place_id in all_places:
                 continue
 
-            ptype = p.get("place_type")
+            ptype = p.get("primaryType")
             rating = p.get("rating", 0)
             reviews = p.get("userRatingCount", 0)
             score = compute_score(rating, reviews)
@@ -304,6 +301,7 @@ def collect_places(LAT, LNG):
 
             all_places[place_id] = {
                 "name": name,
+                "type": ptype,
                 "date_time": hours,
                 "address": address,
                 "description": description,
@@ -380,6 +378,7 @@ def thread_top_places(itinerary_view, city_object, lat, lng):
                 Activity.objects.create(
                     city=city_object,
                     name=activity["name"],
+                    type=activity["type"],
                     rating=activity["rating"],
                     num_reviews=activity["reviews"],
                     score=activity["score"],
@@ -392,6 +391,7 @@ def thread_top_places(itinerary_view, city_object, lat, lng):
                 )
                 itinerary_view.activities_full.append({
                     "name": activity["name"],
+                    "type": activity["type"],
                     "rating": activity["rating"],
                     "reviews": activity["reviews"],
                     "address": activity["address"],
@@ -401,6 +401,7 @@ def thread_top_places(itinerary_view, city_object, lat, lng):
                 })
                 itinerary_view.activities_short.append({
                     "name": activity["name"],
+                    "type": activity["type"],
                     "rating": activity["rating"],
                     "reviews": activity["reviews"],
                     "address": activity["address"]

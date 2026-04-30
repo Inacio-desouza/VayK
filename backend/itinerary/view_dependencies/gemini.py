@@ -93,6 +93,7 @@ def generate_itinerary(location_name, act_full, act_short, events, interests, pr
         system_instruction="""
         You are a travel expert. You will receive two lists: 'activities' and 'events'.
         Your goal is to select the best items based on their relevance to the user's interests and preferences.
+        Reference the types field in activities to help determine relevance. The user is interested in: {interests} and has the following preferences: {preferences}.
         
         Scheduling Rules:
         1. Itinerary Density: Provide exactly 2 to 3 items for every full day of the trip including the departure and arrival days.
@@ -103,6 +104,7 @@ def generate_itinerary(location_name, act_full, act_short, events, interests, pr
         1. Prioritize local activities and unique local events.
         2. Prioritize activities within the city limits of the destination over those in neighboring areas.
         3. Strictly avoid large national brand names or global chains.
+        4. If food and dining are among the user's interests include at least one local dining experience every other day.
         
         Output Rules:
         - Itinerary: Return an array of objects. Each object must have an 'index' (the original position in the provided list), a 'source' ('activity' or 'event'), and a 'recommended_time'.
